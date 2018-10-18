@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#ff425ee3</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="white">#Fff</color>
+    <color name="gray">#fff6f5fb</color>
+    <color name="black_homne_tv">#333333</color>
+    <color name="org_item_tv">#F9593D</color>
+    <color name="org_item_bg">#fedbd4</color>
+    <color name="gray_item">#999999</color>
+    <color name="blue_item_btn">#425EE3</color>
+</resources>

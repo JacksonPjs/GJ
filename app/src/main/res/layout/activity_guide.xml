@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.example.blibrary.banner.Guide
+
+            android:id="@+id/guide_banner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:background="@mipmap/banner"
+            tools:visibility="visible"
+
+            />
+
+        <com.example.blibrary.banner.BannerIndicator
+            android:id="@+id/indicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:background="@mipmap/zuobiao_dangqian_banner"
+            android:layout_alignParentBottom="true"
+
+            />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginBottom="100dp">
+        <Button
+            android:id="@+id/bt_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_pop_dismiss"
+            android:text="立即体验"
+            android:textSize="20sp"
+            tools:visibility="visible"
+            android:visibility="gone"
+
+            />
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>
