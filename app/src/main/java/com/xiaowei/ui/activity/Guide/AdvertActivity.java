@@ -9,8 +9,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.blibrary.utils.TimeUtils;
 import com.xiaowei.R;
+import com.xiaowei.bean.AdvertBean;
+import com.xiaowei.bean.NoticeBean;
+import com.xiaowei.net.NetWorks;
 import com.xiaowei.ui.activity.BaseActivity;
 import com.xiaowei.ui.activity.MainActivity;
 import com.xiaowei.ui.activity.StartActivity;
@@ -19,6 +23,7 @@ import com.xiaowei.utils.IntentUtils;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Subscriber;
 
 public class AdvertActivity extends BaseActivity {
 
@@ -26,7 +31,7 @@ public class AdvertActivity extends BaseActivity {
     @Bind(R.id.go)
     TextView go;
     @Bind(R.id.advert_img)
-    ImageView advertIimg;
+    ImageView advertImg;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +43,7 @@ public class AdvertActivity extends BaseActivity {
 
     public void initData(){
         TimeUtils.timerStart(5*1000,1000);
-
+        getAdvertData();
 //
         TimeUtils.setCountDownTimerListener(new TimeUtils.CountDownTimerlistener() {
             @Override
@@ -76,25 +81,27 @@ public class AdvertActivity extends BaseActivity {
         finish();
     }
 
-    Handler mHandler = new Handler() {
-        Intent intent = null;
+    public void getAdvertData() {
+        NetWorks.getAdvert(new Subscriber<AdvertBean>() {
+            @Override
+            public void onCompleted() {
 
-        public void handleMessage(android.os.Message msg) {
-            switch (msg.what) {
-                case 0:
-                    intent = new Intent(activity, MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                    break;
-                case 1:
-//                    intent = new Intent(StartActivity.this, GestureVerifyActivity.class);
-//                    startActivity(intent);
-//                    finish();
-                    break;
             }
 
-        }
+            @Override
+            public void onError(Throwable e) {
 
-        ;
-    };
+            }
+
+            @Override
+            public void onNext(AdvertBean advertBean) {
+                if (advertBean.getCode()==0)
+                    Glide.with(activity)
+                            .load(advertBean.getData().get(0).getImage())
+                            .error(R.mipmap.bg_start)
+                            .into(advertImg);
+            }
+        });
+
+    }
 }

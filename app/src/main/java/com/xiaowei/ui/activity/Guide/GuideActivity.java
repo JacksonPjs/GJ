@@ -27,6 +27,7 @@ import com.example.blibrary.utils.PermissionUtils.PermissionInterface;
 import com.xiaowei.R;
 import com.xiaowei.ui.Adapter.ViewPagerAdapter;
 import com.xiaowei.ui.activity.BaseActivity;
+import com.xiaowei.ui.activity.Login.LoginActivity;
 import com.xiaowei.ui.activity.MainActivity;
 import com.xiaowei.utils.IntentUtils;
 import com.xiaowei.utils.SharedPreferencesUtils;
@@ -127,7 +128,7 @@ public class GuideActivity extends BaseActivity implements PermissionInterface {
 
             fromExit();
         }
-        SharedPreferencesUtils.setIsFirst(this, false);
+        SharedPreferencesUtils.setIsFirst(this, true);
         PermissionHelper helpe=new PermissionHelper(this,this);
         helpe.requestPermissions();
     }
@@ -137,7 +138,7 @@ public class GuideActivity extends BaseActivity implements PermissionInterface {
         Intent intent = null;
         switch (view.getId()) {
             case R.id.bt_next:
-                intent=new Intent(activity,MainActivity.class);
+                intent=new Intent(activity,LoginActivity.class);
                 startActivity(intent);
                 finish();
                 break;

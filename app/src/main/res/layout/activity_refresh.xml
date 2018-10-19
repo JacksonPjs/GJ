@@ -1,27 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    >
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/refrelayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <com.scwang.smartrefresh.layout.SmartRefreshLayout
-            android:id="@+id/refreshLayout"
+        <android.support.design.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             >
-            <com.scwang.smartrefresh.header.BezierCircleHeader
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-            <android.support.design.widget.CoordinatorLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
-                >
-
-
-
             <android.support.design.widget.AppBarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -139,22 +130,20 @@
                                 android:orientation="horizontal"
                                 android:layout_alignParentRight="true"
                                 android:gravity="center"
-                                android:layout_marginRight="@dimen/home_margin"
 
                                 >
                                 <ImageView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:src="@mipmap/icon_location"
+                                    android:src="@mipmap/icon_call"
                                     android:layout_toLeftOf="@+id/city"
-                                    android:layout_margin="3dp"
                                     />
 
                                 <TextView
                                     android:id="@+id/city"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="@string/location"
+                                    android:text="@string/app_name"
                                     android:textColor="#fff"
                                     android:textSize="@dimen/title_size" />
                             </LinearLayout>
@@ -223,26 +212,24 @@
 
             </android.support.design.widget.AppBarLayout>
 
-<android.support.v4.widget.NestedScrollView
-    android:layout_width="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    android:layout_height="wrap_content">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycle"
+            <android.support.v4.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:layoutManager="LinearLayoutManager"
-                tools:listitem="@layout/item_home"
-                tools:spanCount=""></android.support.v7.widget.RecyclerView>
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-</android.support.v4.widget.NestedScrollView>
-            </android.support.design.widget.CoordinatorLayout>
-            <com.scwang.smartrefresh.layout.footer.BallPulseFooter
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:layoutManager="LinearLayoutManager"
+                    tools:listitem="@layout/item_home"
+                    tools:spanCount="4"></android.support.v7.widget.RecyclerView>
 
-                />
-        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+            </android.support.v4.widget.NestedScrollView>
+        </android.support.design.widget.CoordinatorLayout>
+        <com.scwang.smartrefresh.layout.footer.ClassicsFooter
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></com.scwang.smartrefresh.layout.footer.ClassicsFooter>
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+</android.support.design.widget.CoordinatorLayout>
 
-</android.support.constraint.ConstraintLayout>

@@ -129,29 +129,29 @@ public class SharedPreferencesUtils {
 //		editor.putString("face", customerBean.getFace().replaceAll(" ", ""));
         editor.putBoolean("islogin", true);//判断是否登录
 //		editor.putBoolean("existsPaypwd", customerBean.isExistsPaypwd());//判断是否登录
-        editor.putString("phone", bean.getCellPhone());// 保存手机号
-        editor.putString("name", bean.getUserName());// 用户名字
-        editor.putString("password", password);// 用户名字
-        editor.putString("realname", bean.getRealName());// 实名认证名字
-        editor.putString("bankcardno", bean.getBankCardNo());// 卡号
-        editor.putString("password", password);// 用户名字
-        editor.putString("images", bean.getImages());// head
-        //	editor.putLong("systime", System.currentTimeMillis());// head
-        java.text.NumberFormat nf = java.text.NumberFormat.getInstance();
-        nf.setGroupingUsed(false);
-
-        editor.putString("total1", nf.format(bean.getTotal1()) + "");//
-        editor.putString("total2", nf.format(bean.getTotal2()) + "");//
-        editor.putString("total3", nf.format(bean.getTotal3()) + "");//
-
-        editor.putString("usableAmount", nf.format(bean.getUsableAmount()) + "");//
-
-        editor.putString("token", bean.getToken());//
-
-        editor.putBoolean("tPerson", bean.isTPerson());//
-        editor.putBoolean("payPwd", bean.isPayPwd());//
-        editor.putBoolean("email", bean.isEmail());//
-        editor.putBoolean("tBankCardlist", bean.isTBankCardlist());//
+//        editor.putString("phone", bean.getCellPhone());// 保存手机号
+//        editor.putString("name", bean.getUserName());// 用户名字
+//        editor.putString("password", password);// 用户名字
+//        editor.putString("realname", bean.getRealName());// 实名认证名字
+//        editor.putString("bankcardno", bean.getBankCardNo());// 卡号
+//        editor.putString("password", password);// 用户名字
+//        editor.putString("images", bean.getImages());// head
+//        //	editor.putLong("systime", System.currentTimeMillis());// head
+//        java.text.NumberFormat nf = java.text.NumberFormat.getInstance();
+//        nf.setGroupingUsed(false);
+//
+//        editor.putString("total1", nf.format(bean.getTotal1()) + "");//
+//        editor.putString("total2", nf.format(bean.getTotal2()) + "");//
+//        editor.putString("total3", nf.format(bean.getTotal3()) + "");//
+//
+//        editor.putString("usableAmount", nf.format(bean.getUsableAmount()) + "");//
+//
+//        editor.putString("token", bean.getToken());//
+//
+//        editor.putBoolean("tPerson", bean.isTPerson());//
+//        editor.putBoolean("payPwd", bean.isPayPwd());//
+//        editor.putBoolean("email", bean.isEmail());//
+//        editor.putBoolean("tBankCardlist", bean.isTBankCardlist());//
 
         editor.commit();
 

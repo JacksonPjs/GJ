@@ -46,7 +46,7 @@ public class OkHttpUtils {
           //同样okhttp3后也使用build设计模式
           okHttpClient = new OkHttpClient.Builder()
                   //设置一个自动管理cookies的管理器
-                  //    .cookieJar(new CookiesManger(MyApplication.context))
+//                      .cookieJar(new CookiesManger(MyApplication.context))
                   //添加拦截器
                   //  .addInterceptor(httpLoggingInterceptor)
                   //    .addInterceptor(new ReceivedCookiesInterceptor(MyApplication.context))

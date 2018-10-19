@@ -14,10 +14,14 @@ import android.widget.ImageView;
 import com.example.blibrary.banner.Banner;
 import com.example.blibrary.banner.BannerIndicator;
 import com.example.blibrary.utils.T;
+import com.scwang.smartrefresh.header.DropBoxHeader;
+import com.scwang.smartrefresh.header.PhoenixHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.constant.SpinnerStyle;
 import com.scwang.smartrefresh.layout.footer.BallPulseFooter;
+import com.scwang.smartrefresh.layout.footer.FalsifyFooter;
 import com.scwang.smartrefresh.layout.header.BezierRadarHeader;
+import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.xiaowei.R;
@@ -38,7 +42,7 @@ public class RefreshActivity extends BaseActivity{
     Activity activity;
     @Bind(R.id.recycle)
     RecyclerView recyclerView;
-    @Bind(R.id.refreshLayout)
+    @Bind(R.id.refrelayout)
     RefreshLayout refreshLayout;
     HomeAdapter adapter;
     List<ProductListBean.DataBean.contentBean> datas;
@@ -142,12 +146,12 @@ public class RefreshActivity extends BaseActivity{
         });
     }
     public void initRefresh(){
-        recyclerView.setNestedScrollingEnabled(false);
+//        recyclerView.setNestedScrollingEnabled(false);
 
         //设置 Header 为 贝塞尔雷达 样式
-        refreshLayout.setRefreshHeader(new BezierRadarHeader(this).setEnableHorizontalDrag(true));
-//设置 Footer 为 球脉冲 样式
-        refreshLayout.setRefreshFooter(new BallPulseFooter(this).setSpinnerStyle(SpinnerStyle.Scale));
+        refreshLayout.setRefreshHeader(new ClassicsHeader(activity));
+////设置 Footer 为 球脉冲 样式
+//        refreshLayout.setRefreshFooter(new FalsifyFooter(activity));
         //刷新
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
@@ -170,7 +174,7 @@ public class RefreshActivity extends BaseActivity{
 //                mData.add("小明"+i);
 //            }
 //                mNameAdapter.notifyDataSetChanged();
-                refreshLayout.finishLoadMore();
+                refreshLayout.finishLoadMore(2000);
             }
         });
 

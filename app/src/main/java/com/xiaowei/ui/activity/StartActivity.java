@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class StartActivity extends BaseActivity  {
+public class StartActivity extends BaseActivity {
     private final int REQUEST_VIDEO_PERMISSION = 1;
     private final static String TAG = "StartActivity";
     Activity activity;
@@ -99,20 +99,8 @@ public class StartActivity extends BaseActivity  {
 
             setContentView(R.layout.activity_start);
             activity = this;
-//        while (true){
-//            String[] permissions = PermissionsManager.haveNoPermissions(this, PERMISSIONS);
-//            if (permissions == null || permissions.length < 1) {
-//                startMain();
-//                break;
-//            }
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permissions != null && permissions.length > 0) {
-//                ActivityCompat.requestPermissions(this, permissions, REQUEST_VIDEO_PERMISSION);
-//            }
-//        }
-            intent = new Intent(StartActivity.this, AdvertActivity.class);
-            startActivity(intent);
-            finish();
-//            startMain();
+            mHandler.sendEmptyMessageDelayed(0, 2000);
+
 
         }
 

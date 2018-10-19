@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Network;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
@@ -38,6 +39,7 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
+import com.bumptech.glide.Glide;
 import com.example.blibrary.banner.Banner;
 import com.example.blibrary.banner.BannerIndicator;
 import com.example.blibrary.citypicker.CityPicker;
@@ -55,9 +57,12 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.constant.SpinnerStyle;
 import com.scwang.smartrefresh.layout.footer.BallPulseFooter;
 import com.scwang.smartrefresh.layout.header.BezierRadarHeader;
+import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
+import com.xiaowei.bean.BannerBean;
+import com.xiaowei.bean.NoticeBean;
 import com.xiaowei.bean.ScreenBean;
 import com.xiaowei.ui.Adapter.HomeAdapter;
 import com.xiaowei.MyApplication;
@@ -153,6 +158,9 @@ public class MainActivity extends BaseActivity implements
     PopupWindow PopupWindow;
     TextView sortDi, sortGao;
 
+    List<String> drawables;
+    List<NoticeBean.NoticeData> notices;
+
     //声明AMapLocationClient类对象
     public AMapLocationClient mLocationClient = null;
     AMapLocationClientOption option = null;
@@ -196,7 +204,7 @@ public class MainActivity extends BaseActivity implements
     }
 
     public void initData() {
-        datas = new ArrayList<>();
+        notices=new ArrayList<>();
         initMap();
         advertDialog = new AdvertDialog(activity);
         showDialog();
@@ -206,6 +214,7 @@ public class MainActivity extends BaseActivity implements
         initRecycle();
         initRefresh();
         getData(0);
+        getNoticeData();
         //权限
          permissionHelper = new PermissionHelper(this, this);
         permissionHelper.requestPermissions();
@@ -239,8 +248,8 @@ public class MainActivity extends BaseActivity implements
     /*banner*/
     public void initBanner() {
 
-        List<String> drawables = new ArrayList<>();
-        drawables.add("1");
+         drawables = new ArrayList<>();
+//        drawables.add("1");
 //        drawables.add("2");
 //        drawables.add("3");
         banner.setInterval(3000);
@@ -253,12 +262,18 @@ public class MainActivity extends BaseActivity implements
 
             @Override
             public void initImgData(ImageView imageView, Object imgPath) {
-                if (imgPath.equals("1"))
-                    imageView.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.mipmap.banner));
-                if (imgPath.equals("2"))
-                    imageView.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.mipmap.icon_call));
-                if (imgPath.equals("3"))
-                    imageView.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.mipmap.ic_launcher));
+//                Logger.d("initImgData" + NetService.API_SERVER_Url + ((OneBean.BannersBean) imgPath).getImgPath());
+                Glide.with(activity)
+                        .load(imgPath)
+                        .error(R.mipmap.banner)
+                        .into(imageView);
+
+//                if (imgPath.equals("1"))
+//                    imageView.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.mipmap.banner));
+//                if (imgPath.equals("2"))
+//                    imageView.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.mipmap.icon_call));
+//                if (imgPath.equals("3"))
+//                    imageView.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.mipmap.ic_launcher));
             }
         });
         banner.setDataSource(drawables);
@@ -282,10 +297,13 @@ public class MainActivity extends BaseActivity implements
 
             }
         });
+
+        getBannerData();
     }
 
     /*列表初始化*/
     public void initRecycle() {
+        datas = new ArrayList<>();
         adapter = new HomeAdapter(datas, this);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -318,29 +336,14 @@ public class MainActivity extends BaseActivity implements
     }
     public void initRefresh(){
         recyclerView.setNestedScrollingEnabled(false);
-//        refreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
-//            @Override
-//            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-//                refreshLayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
-//
-//            }
-//
-//            @Override
-//            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-//                refreshLayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
-//
-//            }
-//        });
-
-        //设置 Header 为 贝塞尔雷达 样式
-        refreshLayout.setRefreshHeader(new BezierRadarHeader(this).setEnableHorizontalDrag(true));
-//设置 Footer 为 球脉冲 样式
-        refreshLayout.setRefreshFooter(new BallPulseFooter(this).setSpinnerStyle(SpinnerStyle.Scale));
+        refreshLayout.setRefreshHeader(new ClassicsHeader(activity));
         //刷新
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
 //                mData.clear();
+                page=1;
+                getData(0);
 //                mNameAdapter.notifyDataSetChanged();
                 refreshlayout.finishRefresh();
             }
@@ -356,7 +359,7 @@ public class MainActivity extends BaseActivity implements
                 getData(1);
 //            }
 //                mNameAdapter.notifyDataSetChanged();
-                refreshLayout.finishLoadMore();
+//                refreshLayout.finishLoadMore();
             }
         });
 
@@ -481,17 +484,17 @@ public class MainActivity extends BaseActivity implements
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (textSwitcher != null) {
-//                textSwitcher.setText(datas.get(index).getName());
-                textSwitcher.setText("据统计，申请5款产品以上，贷款成功率超过99%");
+                textSwitcher.setText(notices.get(index).getPublisher()+":"+notices.get(index).getContent());
+//                textSwitcher.setText("据统计，申请5款产品以上，贷款成功率超过99%");
                 bitHandler.removeMessages(0);
-//                index++;
-//                if (index == datas.size()) {
-//                    index = 0;
-//                    bitHandler.sendEmptyMessageDelayed(0, 2000);
-//
-//                } else if (index < datas.size()) {
-//                    bitHandler.sendEmptyMessageDelayed(0, 2000);
-//                }
+                index++;
+                if (index == notices.size()) {
+                    index = 0;
+                    bitHandler.sendEmptyMessageDelayed(0, 2000);
+
+                } else if (index < notices.size()) {
+                    bitHandler.sendEmptyMessageDelayed(0, 2000);
+                }
 
             }
 
@@ -499,11 +502,60 @@ public class MainActivity extends BaseActivity implements
     }
 
     /*
+     * 获取banner数据
+     * */
+    public void getBannerData(){
+        NetWorks.getBannerList(new Subscriber<BannerBean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(BannerBean bannerBean) {
+                if (bannerBean.getCode()==0){
+                    for (int i=0;i<=bannerBean.getData().size();i++){
+
+                    }
+                }
+            }
+        });
+    }
+    /*获取公告数据*/
+    public void getNoticeData(){
+        NetWorks.getNotice(new Subscriber<NoticeBean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(NoticeBean noticeBean) {
+                if (noticeBean.getCode()==0)
+                notices.addAll(noticeBean.getData());
+                if (noticeBean.getData().size()>0){
+                    bitHandler.removeMessages(0);
+                    bitHandler.sendEmptyMessage(0);
+                }
+            }
+        });
+    }
+
+    /*
      * 获取数据
      * */
     public void getData(final int type) {
 
-        bitHandler.sendEmptyMessage(0);
         NetWorks.productList(page + "", pageSize + "", minLoan + "", maxLoan + "",
                 minTerm + "", maxTerm + "", sort + "", new Subscriber<ProductListBean>() {
                     @Override
@@ -528,17 +580,29 @@ public class MainActivity extends BaseActivity implements
      * 设置数据
      * */
     public void setDatas(List<ProductListBean.DataBean.contentBean> contentBean, int type) {
-//        bitHandler.removeMessages(0);
-        if (type==0)
-        datas.clear();
-
-
-        if (contentBean.size() > 0) {
-            datas.addAll(contentBean);
-//            bitHandler.sendEmptyMessage(0);
-        }else {
-            T.ShowToastForLong(activity,"没有新数据");
+        if (type==0){
+            datas.clear();
+            if (contentBean.size() > 0) {
+                datas.addAll(contentBean);
+            }
         }
+
+
+
+        if (type==1){
+            refreshLayout.finishLoadMore(1000);
+            if (contentBean.size() > 0) {
+                datas.addAll(contentBean);
+            }else {
+                T.ShowToastForLong(activity,"没有新数据");
+                refreshLayout.finishLoadMoreWithNoMoreData();
+                refreshLayout.setNoMoreData(false);
+
+            }
+
+        }
+
+
         adapter.notifyDataSetChanged();
     }
 

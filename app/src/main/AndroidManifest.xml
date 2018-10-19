@@ -39,7 +39,7 @@
 
         android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.activity.RefreshActivity">
+        <activity android:name=".ui.activity.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
