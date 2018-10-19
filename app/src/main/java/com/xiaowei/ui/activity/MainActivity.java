@@ -50,6 +50,14 @@ import com.example.blibrary.utils.PermissionUtils.PermissionHelper;
 import com.example.blibrary.utils.PermissionUtils.PermissionInterface;
 import com.example.blibrary.utils.StringUtil;
 import com.example.blibrary.utils.T;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.constant.SpinnerStyle;
+import com.scwang.smartrefresh.layout.footer.BallPulseFooter;
+import com.scwang.smartrefresh.layout.header.BezierRadarHeader;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 import com.xiaowei.bean.ScreenBean;
 import com.xiaowei.ui.Adapter.HomeAdapter;
 import com.xiaowei.MyApplication;
@@ -94,6 +102,9 @@ public class MainActivity extends BaseActivity implements
     TextView sortHome;
     @Bind(R.id.city)
     TextView city;
+    @Bind(R.id.refreshLayout)
+    RefreshLayout refreshLayout;
+
     HomeAdapter adapter;
     List<ProductListBean.DataBean.contentBean> datas;
     private int index = 0;
@@ -147,7 +158,7 @@ public class MainActivity extends BaseActivity implements
     AMapLocationClientOption option = null;
     //声明定位回调监听器
     public AMapLocationListener mLocationListener =null;
-
+    PermissionHelper permissionHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -193,10 +204,14 @@ public class MainActivity extends BaseActivity implements
         initBanner();
         initNews();
         initRecycle();
-        getData();
+        initRefresh();
+        getData(0);
         //权限
-        PermissionHelper permissionHelper = new PermissionHelper(this, this);
+         permissionHelper = new PermissionHelper(this, this);
         permissionHelper.requestPermissions();
+
+
+
     }
 
     /*公告*/
@@ -301,13 +316,59 @@ public class MainActivity extends BaseActivity implements
             }
         });
     }
+    public void initRefresh(){
+        recyclerView.setNestedScrollingEnabled(false);
+//        refreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
+//            @Override
+//            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+//                refreshLayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
+//
+//            }
+//
+//            @Override
+//            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+//                refreshLayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
+//
+//            }
+//        });
+
+        //设置 Header 为 贝塞尔雷达 样式
+        refreshLayout.setRefreshHeader(new BezierRadarHeader(this).setEnableHorizontalDrag(true));
+//设置 Footer 为 球脉冲 样式
+        refreshLayout.setRefreshFooter(new BallPulseFooter(this).setSpinnerStyle(SpinnerStyle.Scale));
+        //刷新
+        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+//                mData.clear();
+//                mNameAdapter.notifyDataSetChanged();
+                refreshlayout.finishRefresh();
+            }
+        });
+        //加载更多
+
+        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+//                for(int i=0;i<30;i++){
+//                mData.add("小明"+i);
+                page++;
+                getData(1);
+//            }
+//                mNameAdapter.notifyDataSetChanged();
+                refreshLayout.finishLoadMore();
+            }
+        });
+
+
+
+    }
 
     /*地图相关*/
     public void initMap() {
         //初始化定位
         mLocationClient = new AMapLocationClient(getApplicationContext());
 //设置定位回调监听
-        mLocationClient.setLocationListener(mLocationListener);
         option = new AMapLocationClientOption();
         /**
          * 设置定位场景，目前支持三种场景（签到、出行、运动，默认无场景）
@@ -336,24 +397,8 @@ public class MainActivity extends BaseActivity implements
             public void onLocationChanged(AMapLocation aMapLocation) {
                 if (aMapLocation != null) {
                     if (aMapLocation.getErrorCode() == 0) {
-//可在其中解析amapLocation获取相应内容。
                         //定位成功回调信息，设置相关消息
-                        aMapLocation.getLocationType();//获取当前定位结果来源，如网络定位结果，详见官方定位类型表
-                        aMapLocation.getLatitude();//获取纬度
-                        aMapLocation.getLongitude();//获取经度
-                        aMapLocation.getAccuracy();//获取精度信息
-//                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//                    Date date = new Date(aMapLocation.getTime());
-//                    df.format(date);//定位时间
-//                    aMapLocation.getAddress();//地址，如果option中设置isNeedAddress为false，则没有此结果，网络定位结果中会有地址信息，GPS定位不返回地址信息。
-//                    aMapLocation.getCountry();//国家信息
-                        aMapLocation.getProvince();//省信息
-                        aMapLocation.getCity();//城市信息
-                        aMapLocation.getDistrict();//城区信息
-//                    aMapLocation.getStreet();//街道信息
-//                    aMapLocation.getStreetNum();//街道门牌号信息
-//                    aMapLocation.getCityCode();//城市编码
-//                    aMapLocation.getAdCode();//地区编码
+
                         //获取定位信息
                         StringBuffer buffer = new StringBuffer();
                         buffer.append(
@@ -362,13 +407,15 @@ public class MainActivity extends BaseActivity implements
                                         + aMapLocation.getAdCode() + ""
                                         + aMapLocation.getStreet() + ""
                                         + aMapLocation.getStreetNum());
-                        Toast.makeText(getApplicationContext(), buffer.toString(), Toast.LENGTH_LONG).show();
+//                        Toast.makeText(getApplicationContext(), buffer.toString(), Toast.LENGTH_LONG).show();
                         locationCity = aMapLocation.getCity();
                         locationProvince = aMapLocation.getProvince();
                         city.setText(locationCity + "");
 
                         CityPicker.getInstance().locateComplete(new LocatedCity(locationCity, locationProvince, ""), LocateState.SUCCESS);
-
+                        Log.e("Amapsuccess", "location Error, ErrCode:"
+                                + aMapLocation.getCity() + ", errInfo:"
+                                + aMapLocation.getErrorInfo());
 
                     } else {
                         //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
@@ -382,6 +429,7 @@ public class MainActivity extends BaseActivity implements
                 }
             }
         };
+        mLocationClient.setLocationListener(mLocationListener);
 
 
     }
@@ -412,10 +460,18 @@ public class MainActivity extends BaseActivity implements
         }
     }
 
+
     //权限请求不被用户允许。可以提示并退出或者提示权限的用途并重新发起权限申请。
     @Override
     public void requestPermissionsFail() {
+
         showMissingPermissionDialog();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionHelper.requestPermissionsResult(requestCode,permissions,grantResults);
     }
 
     //公告handler
@@ -445,7 +501,7 @@ public class MainActivity extends BaseActivity implements
     /*
      * 获取数据
      * */
-    public void getData() {
+    public void getData(final int type) {
 
         bitHandler.sendEmptyMessage(0);
         NetWorks.productList(page + "", pageSize + "", minLoan + "", maxLoan + "",
@@ -463,7 +519,7 @@ public class MainActivity extends BaseActivity implements
                     @Override
                     public void onNext(ProductListBean product) {
                         List<ProductListBean.DataBean.contentBean> contentBean = product.getData().getContent();
-                        setDatas(contentBean);
+                        setDatas(contentBean,type);
                     }
                 });
     }
@@ -471,12 +527,17 @@ public class MainActivity extends BaseActivity implements
     /*
      * 设置数据
      * */
-    public void setDatas(List<ProductListBean.DataBean.contentBean> contentBean) {
+    public void setDatas(List<ProductListBean.DataBean.contentBean> contentBean, int type) {
 //        bitHandler.removeMessages(0);
+        if (type==0)
         datas.clear();
+
+
         if (contentBean.size() > 0) {
             datas.addAll(contentBean);
 //            bitHandler.sendEmptyMessage(0);
+        }else {
+            T.ShowToastForLong(activity,"没有新数据");
         }
         adapter.notifyDataSetChanged();
     }
@@ -587,23 +648,29 @@ public class MainActivity extends BaseActivity implements
                     @Override
                     public void onLocate() {
 //                        CityPicker.getInstance().locateComplete(new LocatedCity("杭州", null, null), LocateState.SUCCESS);
-
+                        if (null != mLocationClient) {
+                            //给定位客户端对象设置定位参数
+                            mLocationClient.setLocationOption(option);
+                            //设置场景模式后最好调用一次stop，再调用start以保证场景模式生效
+                            mLocationClient.stopLocation();
+                            mLocationClient.startLocation();
+                        }
                         //开始定位，这里模拟一下定位
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (null != mLocationClient) {
-                                    //给定位客户端对象设置定位参数
-                                    mLocationClient.setLocationOption(option);
-                                    //设置场景模式后最好调用一次stop，再调用start以保证场景模式生效
-                                    mLocationClient.stopLocation();
-                                    mLocationClient.startLocation();
-                                }
-
-//                                locatedCity.setProvince(locationProvince);
-//                                locatedCity.setName(locationCity);
-                            }
-                        }, 3000);
+//                        new Handler().postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                if (null != mLocationClient) {
+//                                    //给定位客户端对象设置定位参数
+//                                    mLocationClient.setLocationOption(option);
+//                                    //设置场景模式后最好调用一次stop，再调用start以保证场景模式生效
+//                                    mLocationClient.stopLocation();
+//                                    mLocationClient.startLocation();
+//                                }
+//
+////                                locatedCity.setProvince(locationProvince);
+////                                locatedCity.setName(locationCity);
+//                            }
+//                        }, 3000);
                     }
                 })
                 .show();
@@ -706,7 +773,7 @@ public class MainActivity extends BaseActivity implements
             public void onClick(View v) {
                 PopupWindow.dismiss();
                 sort = -1;
-                getData();
+                getData(0);
             }
         });
         sortGao.setOnClickListener(new View.OnClickListener() {
@@ -714,7 +781,7 @@ public class MainActivity extends BaseActivity implements
             public void onClick(View v) {
                 PopupWindow.dismiss();
                 sort = 1;
-                getData();
+                getData(0);
             }
         });
 
@@ -920,7 +987,7 @@ public class MainActivity extends BaseActivity implements
                 maxTerm = "";//最高期限
 //    String condition="speed";//精准speed/rate/amount
                 sort = 1;//1/-1  （1：升序，-1：降序）
-                getData();
+                getData(1);
             }
         });
 
@@ -928,7 +995,7 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onClick(View v) {
                 mPopupWindow.dismiss();
-                getData();
+                getData(0);
             }
         });
     }
