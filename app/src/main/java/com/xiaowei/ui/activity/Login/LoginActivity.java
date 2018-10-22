@@ -12,6 +12,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.blibrary.log.Logger;
 import com.example.blibrary.utils.LoginRegisterUtils;
 import com.example.blibrary.utils.T;
 import com.example.blibrary.utils.TimeUtils;
@@ -21,10 +22,18 @@ import com.xiaowei.bean.YzmBean;
 import com.xiaowei.net.NetWorks;
 import com.xiaowei.ui.activity.BaseActivity;
 import com.xiaowei.ui.activity.MainActivity;
+import com.xiaowei.utils.SharedPreferencesUtils;
+
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
+
+import javax.net.ssl.SSLHandshakeException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.adapter.rxjava.HttpException;
 import rx.Subscriber;
 
 public class LoginActivity extends BaseActivity {
@@ -37,7 +46,7 @@ public class LoginActivity extends BaseActivity {
     EditText yzm;
     @Bind(R.id.cbox)
     CheckBox checkBox;
-    boolean isCheck = false;
+    boolean isCheck = true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,6 +54,7 @@ public class LoginActivity extends BaseActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         activity = this;
+        checkBox.setChecked(true);//默认选中
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -118,15 +128,21 @@ public class LoginActivity extends BaseActivity {
 
             @Override
             public void onError(Throwable e) {
-
+                T.ShowToastForLong(LoginActivity.this, "网络异常");
+                Logger.e(e.toString());
             }
+
+
 
             @Override
             public void onNext(LoginBean loginBean) {
                 if (loginBean.getCode() == 0) {
                     T.ShowToastForShort(activity, "登录成功");
+//                    SharedPreferencesUtils.setIsLogin(activity,true);
+                    SharedPreferencesUtils.savaUser(activity,loginBean,"");
                     Intent intent = new Intent(activity, MainActivity.class);
                     startActivity(intent);
+                    TimeUtils.timerCancel();
                     finish();
                 } else {
                     T.ShowToastForShort(activity, "登录失败");

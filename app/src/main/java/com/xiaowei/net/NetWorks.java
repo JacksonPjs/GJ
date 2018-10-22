@@ -3,6 +3,7 @@ package com.xiaowei.net;
 import com.xiaowei.bean.AdvertBean;
 import com.xiaowei.bean.BannerBean;
 import com.xiaowei.bean.LoginBean;
+import com.xiaowei.bean.LoginOutBean;
 import com.xiaowei.bean.NoticeBean;
 import com.xiaowei.bean.ProductListBean;
 import com.xiaowei.bean.YzmBean;
@@ -20,8 +21,8 @@ public class NetWorks extends RetrofitUtils {
      *
      * @param observer
      */
-    public static void login(String cellPhone, String validateCode,String registerClient, Subscriber<LoginBean> observer) {
-        setSubscribe(service.login(cellPhone, validateCode,registerClient), observer);
+    public static void login(String cellPhone, String validateCode, String registerClient, Subscriber<LoginBean> observer) {
+        setSubscribe(service.login(cellPhone, validateCode, registerClient), observer);
     }
 
     /**
@@ -40,12 +41,21 @@ public class NetWorks extends RetrofitUtils {
     public static void getBannerList(Subscriber<BannerBean> observer) {
         setSubscribe(service.getBannerList(), observer);
     }
- /*
+
+    /*
      *获取公告
      * @param observer
      */
     public static void getNotice(Subscriber<NoticeBean> observer) {
         setSubscribe(service.getNotice(), observer);
+    }
+    /*
+     *登出
+     * @param observer
+     */
+
+    public static void loginOut(Subscriber<LoginOutBean> observer) {
+        setSubscribe(service.loginOut(), observer);
     }
 
     /**
@@ -66,10 +76,10 @@ public class NetWorks extends RetrofitUtils {
     }
 
     /*
-            *获取公告
+     *获取公告
      * @param observer
      */
-    public static void getYzm(String phone,Subscriber<YzmBean> observer) {
+    public static void getYzm(String phone, Subscriber<YzmBean> observer) {
         setSubscribe(service.getValidateCode(phone), observer);
     }
 

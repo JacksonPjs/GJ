@@ -3,6 +3,7 @@ package com.xiaowei.net;
 import com.xiaowei.bean.AdvertBean;
 import com.xiaowei.bean.BannerBean;
 import com.xiaowei.bean.LoginBean;
+import com.xiaowei.bean.LoginOutBean;
 import com.xiaowei.bean.NoticeBean;
 import com.xiaowei.bean.ProductListBean;
 import com.xiaowei.bean.YzmBean;
@@ -59,6 +60,11 @@ public interface NetService {
      */
     @GET("/user/validateCode")
     Observable<YzmBean> getValidateCode(@Query("phone") String phone);
+    /**
+     * 5.登出
+     */
+    @GET("/user/logout")
+    Observable<LoginOutBean> loginOut();
 
 
 }

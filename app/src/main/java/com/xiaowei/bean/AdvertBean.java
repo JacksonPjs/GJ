@@ -1,8 +1,9 @@
 package com.xiaowei.bean;
 
+import java.io.Serializable;
 import java.util.List;
 /*开屏与弹窗广告实体类*/
-public class AdvertBean {
+public class AdvertBean implements Serializable {
     /*
     * {
     "code": 0,
@@ -46,7 +47,7 @@ public class AdvertBean {
         this.data = data;
     }
 
-    public static class AdverBean {
+    public static class AdverBean implements Serializable{
         int id;
         String name;
         String positionStr;

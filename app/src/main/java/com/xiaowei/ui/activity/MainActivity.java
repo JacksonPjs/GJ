@@ -61,9 +61,11 @@ import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
+import com.xiaowei.bean.AdvertBean;
 import com.xiaowei.bean.BannerBean;
 import com.xiaowei.bean.NoticeBean;
 import com.xiaowei.bean.ScreenBean;
+import com.xiaowei.net.ErrorUtils.ShowError;
 import com.xiaowei.ui.Adapter.HomeAdapter;
 import com.xiaowei.MyApplication;
 import com.xiaowei.R;
@@ -77,14 +79,20 @@ import com.xiaowei.widget.Dialog.AdvertDialog;
 import com.xiaowei.widget.Dialog.CustomDialog;
 import com.xiaowei.widget.DividerItemDecoration;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.net.ssl.SSLHandshakeException;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.adapter.rxjava.HttpException;
 import rx.Subscriber;
 
 public class MainActivity extends BaseActivity implements
@@ -165,8 +173,9 @@ public class MainActivity extends BaseActivity implements
     public AMapLocationClient mLocationClient = null;
     AMapLocationClientOption option = null;
     //声明定位回调监听器
-    public AMapLocationListener mLocationListener =null;
+    public AMapLocationListener mLocationListener = null;
     PermissionHelper permissionHelper;
+    AdvertBean advertBean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -204,11 +213,13 @@ public class MainActivity extends BaseActivity implements
     }
 
     public void initData() {
-        notices=new ArrayList<>();
-        initMap();
-        advertDialog = new AdvertDialog(activity);
-        showDialog();
+        notices = new ArrayList<>();
+//        Bundle bundle= getIntent().getExtras();
+//        advertBean = (AdvertBean) bundle.getSerializable("advertbean");
 
+
+        getAdvertData();
+        initMap();
         initBanner();
         initNews();
         initRecycle();
@@ -216,9 +227,8 @@ public class MainActivity extends BaseActivity implements
         getData(0);
         getNoticeData();
         //权限
-         permissionHelper = new PermissionHelper(this, this);
+        permissionHelper = new PermissionHelper(this, this);
         permissionHelper.requestPermissions();
-
 
 
     }
@@ -248,7 +258,7 @@ public class MainActivity extends BaseActivity implements
     /*banner*/
     public void initBanner() {
 
-         drawables = new ArrayList<>();
+        drawables = new ArrayList<>();
 //        drawables.add("1");
 //        drawables.add("2");
 //        drawables.add("3");
@@ -334,7 +344,9 @@ public class MainActivity extends BaseActivity implements
             }
         });
     }
-    public void initRefresh(){
+
+    /*刷新，加载*/
+    public void initRefresh() {
         recyclerView.setNestedScrollingEnabled(false);
         refreshLayout.setRefreshHeader(new ClassicsHeader(activity));
         //刷新
@@ -342,7 +354,7 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
 //                mData.clear();
-                page=1;
+                page = 1;
                 getData(0);
 //                mNameAdapter.notifyDataSetChanged();
                 refreshlayout.finishRefresh();
@@ -362,7 +374,6 @@ public class MainActivity extends BaseActivity implements
 //                refreshLayout.finishLoadMore();
             }
         });
-
 
 
     }
@@ -474,7 +485,7 @@ public class MainActivity extends BaseActivity implements
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        permissionHelper.requestPermissionsResult(requestCode,permissions,grantResults);
+        permissionHelper.requestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     //公告handler
@@ -484,7 +495,7 @@ public class MainActivity extends BaseActivity implements
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (textSwitcher != null) {
-                textSwitcher.setText(notices.get(index).getPublisher()+":"+notices.get(index).getContent());
+                textSwitcher.setText(notices.get(index).getPublisher() + ":" + notices.get(index).getContent());
 //                textSwitcher.setText("据统计，申请5款产品以上，贷款成功率超过99%");
                 bitHandler.removeMessages(0);
                 index++;
@@ -501,10 +512,31 @@ public class MainActivity extends BaseActivity implements
         }
     }
 
+    public void getAdvertData() {
+        NetWorks.getAdvert(new Subscriber<AdvertBean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(AdvertBean advertBean) {
+                advertDialog = new AdvertDialog(activity, advertBean);
+                showDialog();
+            }
+        });
+
+    }
+
     /*
      * 获取banner数据
      * */
-    public void getBannerData(){
+    public void getBannerData() {
         NetWorks.getBannerList(new Subscriber<BannerBean>() {
             @Override
             public void onCompleted() {
@@ -518,16 +550,17 @@ public class MainActivity extends BaseActivity implements
 
             @Override
             public void onNext(BannerBean bannerBean) {
-                if (bannerBean.getCode()==0){
-                    for (int i=0;i<=bannerBean.getData().size();i++){
+                if (bannerBean.getCode() == 0) {
+                    for (int i = 0; i <= bannerBean.getData().size(); i++) {
 
                     }
                 }
             }
         });
     }
+
     /*获取公告数据*/
-    public void getNoticeData(){
+    public void getNoticeData() {
         NetWorks.getNotice(new Subscriber<NoticeBean>() {
             @Override
             public void onCompleted() {
@@ -541,9 +574,9 @@ public class MainActivity extends BaseActivity implements
 
             @Override
             public void onNext(NoticeBean noticeBean) {
-                if (noticeBean.getCode()==0)
-                notices.addAll(noticeBean.getData());
-                if (noticeBean.getData().size()>0){
+                if (noticeBean.getCode() == 0)
+                    notices.addAll(noticeBean.getData());
+                if (noticeBean.getData().size() > 0) {
                     bitHandler.removeMessages(0);
                     bitHandler.sendEmptyMessage(0);
                 }
@@ -565,13 +598,13 @@ public class MainActivity extends BaseActivity implements
 
                     @Override
                     public void onError(Throwable e) {
-                        T.ShowToastForLong(activity, "网络异常");
+                        ShowError.log(e, activity);
                     }
 
                     @Override
                     public void onNext(ProductListBean product) {
                         List<ProductListBean.DataBean.contentBean> contentBean = product.getData().getContent();
-                        setDatas(contentBean,type);
+                        setDatas(contentBean, type);
                     }
                 });
     }
@@ -580,7 +613,7 @@ public class MainActivity extends BaseActivity implements
      * 设置数据
      * */
     public void setDatas(List<ProductListBean.DataBean.contentBean> contentBean, int type) {
-        if (type==0){
+        if (type == 0) {
             datas.clear();
             if (contentBean.size() > 0) {
                 datas.addAll(contentBean);
@@ -588,13 +621,12 @@ public class MainActivity extends BaseActivity implements
         }
 
 
-
-        if (type==1){
+        if (type == 1) {
             refreshLayout.finishLoadMore(1000);
             if (contentBean.size() > 0) {
                 datas.addAll(contentBean);
-            }else {
-                T.ShowToastForLong(activity,"没有新数据");
+            } else {
+                T.ShowToastForLong(activity, "没有新数据");
                 refreshLayout.finishLoadMoreWithNoMoreData();
                 refreshLayout.setNoMoreData(false);
 

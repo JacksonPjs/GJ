@@ -37,6 +37,35 @@ public class StartActivity extends BaseActivity {
     Activity activity;
     Intent intent;
 
+
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        startMain();
+
+
+    }
+
+    public void startMain() {
+        // 判断是否是第一次开启应用
+        boolean isFirstOpen = SharedPreferencesUtils.getIsFirst(this);
+        // 如果是第一次启动，则先进入功能引导页
+        if (isFirstOpen) {
+            intent = new Intent(this, GuideActivity.class);
+            intent.putExtra("flag", "start");
+            startActivity(intent);
+            finish();
+            return;
+        } else {
+            // 如果不是第一次启动app，则正常显示启动屏
+            setContentView(R.layout.activity_start);
+            activity = this;
+            mHandler.sendEmptyMessageDelayed(0, 2000);
+        }
+    }
+
     Handler mHandler = new Handler() {
         Intent intent = null;
 
@@ -58,54 +87,6 @@ public class StartActivity extends BaseActivity {
 
         ;
     };
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        startMain();
-
-
-    }
-
-    public void startMain() {
-//        String[] permissions = PermissionsManager.haveNoPermissions(activity, PERMISSIONS);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permissions != null && permissions.length > 0) {
-//            ActivityCompat.requestPermissions(activity, permissions, REQUEST_VIDEO_PERMISSION);
-//        }
-//        String gest = SharedPreferencesUtils.getGesturePsw(this);
-//
-//        boolean isGest=SharedPreferencesUtils.getIsGesture(this);
-//        if (gest != null&&isGest) {
-//            mHandler.sendEmptyMessageDelayed(1, 2000);
-//
-//        } else {
-//                    mHandler.sendEmptyMessageDelayed(0, 2000);
-
-//        }
-
-        // 判断是否是第一次开启应用
-        boolean isFirstOpen = SharedPreferencesUtils.getIsFirst(this);
-        // 如果是第一次启动，则先进入功能引导页
-        if (isFirstOpen) {
-            intent = new Intent(this, GuideActivity.class);
-            intent.putExtra("flag", "start");
-            startActivity(intent);
-            finish();
-            return;
-        } else {
-            // 如果不是第一次启动app，则正常显示启动屏
-
-
-            setContentView(R.layout.activity_start);
-            activity = this;
-            mHandler.sendEmptyMessageDelayed(0, 2000);
-
-
-        }
-
-
-    }
 
 
 }

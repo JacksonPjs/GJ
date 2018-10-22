@@ -128,7 +128,7 @@ public class GuideActivity extends BaseActivity implements PermissionInterface {
 
             fromExit();
         }
-        SharedPreferencesUtils.setIsFirst(this, true);
+        SharedPreferencesUtils.setIsFirst(this, false);
         PermissionHelper helpe=new PermissionHelper(this,this);
         helpe.requestPermissions();
     }

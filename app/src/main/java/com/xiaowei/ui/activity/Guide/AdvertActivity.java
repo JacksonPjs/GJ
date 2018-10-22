@@ -32,6 +32,7 @@ public class AdvertActivity extends BaseActivity {
     TextView go;
     @Bind(R.id.advert_img)
     ImageView advertImg;
+    AdvertBean bean;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +78,9 @@ public class AdvertActivity extends BaseActivity {
 
     public void startMain(){
         Intent intent=new Intent(activity,MainActivity.class);
+        Bundle bundle=new Bundle();
+        bundle.putSerializable("advertbean",bean);
+        intent.putExtras(bundle);
         startActivity(intent);
         finish();
     }
@@ -95,6 +99,7 @@ public class AdvertActivity extends BaseActivity {
 
             @Override
             public void onNext(AdvertBean advertBean) {
+                bean=advertBean;
                 if (advertBean.getCode()==0)
                     Glide.with(activity)
                             .load(advertBean.getData().get(0).getImage())

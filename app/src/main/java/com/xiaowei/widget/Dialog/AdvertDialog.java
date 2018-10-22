@@ -10,17 +10,21 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.xiaowei.R;
+import com.xiaowei.bean.AdvertBean;
 
 public class AdvertDialog extends BaseDialog {
     Bitmap bitmap=null;
     TextView msg;
     ImageView bg;
     ImageView finish;
+    AdvertBean advertBean;
 
 
-    public AdvertDialog(Context context) {
+    public AdvertDialog(Context context, AdvertBean advertBean) {
         super(context);
+        this.advertBean=advertBean;
     }
 
 
@@ -37,7 +41,10 @@ public class AdvertDialog extends BaseDialog {
         finish=findViewById(R.id.finish);
         bg=findViewById(R.id.bg);
         msg=findViewById(R.id.msg);
-
+        Glide.with(context)
+                .load(advertBean.getData().get(0).getImage())
+                .error(R.mipmap.bg_start)
+                .into(bg);
 
         finish.setOnClickListener(new View.OnClickListener() {
             @Override

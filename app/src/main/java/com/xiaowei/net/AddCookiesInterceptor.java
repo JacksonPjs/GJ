@@ -35,10 +35,10 @@ public class AddCookiesInterceptor implements Interceptor {
 
     //   Logger.e("------------------------------------111");
     //最近在学习RxJava,这里用了RxJava的相关API大家可以忽略,用自己逻辑实现即可
-//        if ((Boolean) SharedPreferencesUtils.getParam(MyApplication.context,"islogin",false)){
+        if ((Boolean) SharedPreferencesUtils.getParam(MyApplication.context,"islogin",false)){
 //
 //       //     Logger.e("------------------------------------");
-//            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
 //            sb.append(" _ed_token_");
 //            sb.append("=");
 //            sb.append((String) SharedPreferencesUtils.getParam(MyApplication.context,"token",""));
@@ -53,12 +53,13 @@ public class AddCookiesInterceptor implements Interceptor {
 //            sb.append("=");
 //            sb.append((String) SharedPreferencesUtils.getParam(MyApplication.context,"phone",""));
 //            sb.append(";");
-//            builder.addHeader("Cookie", sb.toString());
+          sb.append(SharedPreferencesUtils.getParam(MyApplication.context,"cookie",""));
+
+            builder.addHeader("Cookie", sb.toString());
 ////
 //////            Logger.d("Cookie---"+sb.toString());
 ////
-//        }
-
+        }
 
 
 

@@ -49,7 +49,7 @@ public class OkHttpUtils {
 //                      .cookieJar(new CookiesManger(MyApplication.context))
                   //添加拦截器
                   //  .addInterceptor(httpLoggingInterceptor)
-                  //    .addInterceptor(new ReceivedCookiesInterceptor(MyApplication.context))
+                      .addInterceptor(new ReceivedCookiesInterceptor(MyApplication.context))
                   .addInterceptor(new AddCookiesInterceptor(MyApplication.context))
                   .addInterceptor(httpLoggingInterceptor)
                   //添加网络连接器

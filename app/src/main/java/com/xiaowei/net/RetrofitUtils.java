@@ -33,6 +33,7 @@ public abstract class RetrofitUtils {
 //                    .addConverterFactory(ScalarsConverterFactory.create())
               //添加转化库，默认是Gson
               .addConverterFactory(GsonConverterFactory.create(new Gson()))
+
               //添加自定义解析
 //                    .addConverterFactory(CustomConverterFactory.create())
               //添加回调库，采用RxJava
