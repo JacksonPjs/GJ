@@ -113,7 +113,7 @@ public class SharedPreferencesUtils {
      * @param context
      * @return
      */
-    public static void savaUser(Context context, LoginBean bean, String password) {
+    public static void savaUser(Context context, LoginBean bean, String phone) {
 
         SharedPreferences sp = context.getSharedPreferences(FILE_NAME,
                 Context.MODE_PRIVATE);
@@ -128,8 +128,9 @@ public class SharedPreferencesUtils {
 //
 //		editor.putString("face", customerBean.getFace().replaceAll(" ", ""));
         editor.putBoolean("islogin", true);//判断是否登录
+        editor.putString("userid",bean.getData()+"");
 //		editor.putBoolean("existsPaypwd", customerBean.isExistsPaypwd());//判断是否登录
-//        editor.putString("phone", bean.getCellPhone());// 保存手机号
+        editor.putString("phone", phone);// 保存手机号
 //        editor.putString("name", bean.getUserName());// 用户名字
 //        editor.putString("password", password);// 用户名字
 //        editor.putString("realname", bean.getRealName());// 实名认证名字

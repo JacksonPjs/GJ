@@ -3,220 +3,219 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    >
+    android:fitsSystemWindows="true">
+
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        >
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
         <android.support.design.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
+            android:layout_height="match_parent">
 
 
-        <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
-            app:contentScrim="@color/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
-
-
-            <LinearLayout
+            <android.support.design.widget.AppBarLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/title_hight"
-                android:fitsSystemWindows="true"
-                android:orientation="vertical"
-                app:layout_collapseMode="parallax"
+                android:layout_height="wrap_content">
 
-                >
-
-
-                <RelativeLayout
+                <android.support.design.widget.CollapsingToolbarLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:fitsSystemWindows="true"
+                    app:contentScrim="@color/colorPrimary"
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-                    <com.example.blibrary.banner.Banner
 
-                        android:id="@+id/main_banner"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/banner_hight"
-                        tools:background="@mipmap/banner"
-                        tools:visibility="visible"
-
-                        />
-
-                    <com.example.blibrary.banner.BannerIndicator
-                        android:id="@+id/indicator"
+                    <android.support.constraint.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        tools:background="@mipmap/zuobiao_dangqian_banner"
+                        android:layout_marginTop="@dimen/title_hight"
+                        android:fitsSystemWindows="true"
+                        android:orientation="vertical"
+                        app:layout_collapseMode="parallax"
+                        >
 
-                        />
-                </RelativeLayout>
+                            <com.example.blibrary.banner.Banner
+                                android:id="@+id/main_banner"
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                tools:background="@mipmap/banner"
+                                tools:visibility="visible"
+                                app:layout_constraintDimensionRatio="h,2:1"
 
+                                />
+
+                            <com.example.blibrary.banner.BannerIndicator
+                                android:id="@+id/indicator"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                tools:background="@mipmap/zuobiao_dangqian_banner"
+                                app:layout_constraintBottom_toBottomOf="@+id/main_banner"
+
+                                />
+
+
+
+
+                        <LinearLayout
+                            app:layout_constraintTop_toBottomOf="@+id/indicator"
+                            android:id="@+id/gonggao"
+                            android:layout_width="match_parent"
+                            android:layout_height="30dp"
+                            android:background="@color/white"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="10dp"
+                                android:src="@mipmap/icon_new" />
+
+                            <TextSwitcher
+                                android:id="@+id/textview_auto_roll"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginRight="5dp"
+                                android:layout_weight="1"
+                                android:inAnimation="@anim/push_up_in"
+                                android:minHeight="30dp"
+                                android:outAnimation="@anim/push_up_out"></TextSwitcher>
+
+
+                        </LinearLayout>
+
+
+                    </android.support.constraint.ConstraintLayout>
+
+                    <android.support.v7.widget.Toolbar
+                        android:id="@+id/toolbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/title_hight"
+                        app:layout_collapseMode="pin"
+                        app:contentInsetStart="0dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/title_hight">
+                            <TextView
+                                android:id="@+id/name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:text="@string/app_name"
+                                android:textColor="#fff"
+                                android:textSize="@dimen/title_size" />
+                            <ImageView
+                                android:id="@+id/mine"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:padding="@dimen/home_margin"
+                                android:src="@mipmap/icon_mine"
+
+                                />
+
+
+
+                            <LinearLayout
+                                android:id="@+id/call"
+
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_alignParentRight="true"
+                                android:paddingRight="@dimen/home_margin"
+                                android:gravity="center"
+                                android:layout_centerVertical="true"
+                                android:orientation="horizontal"
+
+                                >
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="3dp"
+                                    android:layout_toLeftOf="@+id/city"
+                                    android:src="@mipmap/icon_location" />
+
+                                <TextView
+                                    android:id="@+id/city"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/location"
+                                    android:textColor="#fff"
+                                    android:textSize="@dimen/text_15_size" />
+                            </LinearLayout>
+
+
+                        </RelativeLayout>
+
+                    </android.support.v7.widget.Toolbar>
+
+                </android.support.design.widget.CollapsingToolbarLayout>
 
                 <LinearLayout
-                    android:id="@+id/gonggao"
                     android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:background="@color/white"
-                    android:gravity="center_vertical"
+                    android:layout_height="wrap_content"
+                    android:background="@color/gray"
                     android:orientation="horizontal">
 
-                    <ImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="10dp"
-                        android:src="@mipmap/icon_new" />
-
-                    <TextSwitcher
-                        android:id="@+id/textview_auto_roll"
-                        android:layout_width="0dp"
+                    <TextView
+                        android:id="@+id/tv_speed"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
                         android:layout_weight="1"
-                        android:inAnimation="@anim/push_up_in"
-                        android:minHeight="30dp"
-                        android:outAnimation="@anim/push_up_out"></TextSwitcher>
-
-
-                </LinearLayout>
-
-
-            </LinearLayout>
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/title_hight"
-                app:layout_collapseMode="pin">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/title_hight">
-
-                    <ImageView
-                        android:id="@+id/mine"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:padding="@dimen/home_margin"
-                        android:src="@mipmap/icon_mine"
-
-                        />
+                        android:gravity="center"
+                        android:padding="@dimen/home_button_padding"
+                        android:text="@string/home_tv1"
+                        android:textColor="@color/black_homne_tv"
+                        android:textSize="@dimen/text_midle_size" />
 
                     <TextView
-                        android:id="@+id/name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:text="@string/app_name"
-                        android:textColor="#fff"
-                        android:textSize="@dimen/title_size" />
-
-                    <LinearLayout
-                        android:id="@+id/call"
-
-                        android:layout_width="wrap_content"
+                        android:id="@+id/tv_rate"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:layout_alignParentRight="true"
+                        android:layout_weight="1"
                         android:gravity="center"
-                        android:layout_marginRight="@dimen/home_margin"
+                        android:padding="@dimen/home_button_padding"
 
-                        >
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@mipmap/icon_location"
-                            android:layout_toLeftOf="@+id/city"
-                            android:layout_margin="3dp"
-                            />
+                        android:text="@string/home_tv2"
+                        android:textColor="@color/black_homne_tv"
+                        android:textSize="@dimen/text_midle_size" />
 
-                        <TextView
-                            android:id="@+id/city"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/location"
-                            android:textColor="#fff"
-                            android:textSize="@dimen/title_size" />
-                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/tv_sort"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:drawableRight="@mipmap/icon_screen"
+                        android:gravity="center"
+                        android:paddingTop="@dimen/home_button_padding"
+                        android:paddingBottom="@dimen/home_button_padding"
+                        android:text="@string/home_tv3"
+                        android:textColor="@color/black_homne_tv"
+                        android:textSize="@dimen/text_midle_size" />
 
+                    <TextView
+                        android:id="@+id/screen_home"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:drawableRight="@mipmap/icon_screen"
+                        android:gravity="center"
+                        android:paddingTop="@dimen/home_button_padding"
+                        android:paddingRight="@dimen/home_button_padding"
+                        android:paddingBottom="@dimen/home_button_padding"
+                        android:text="@string/home_tv4"
+                        android:textColor="@color/black_homne_tv"
+                        android:textSize="@dimen/text_midle_size" />
+                </LinearLayout>
 
-                </RelativeLayout>
-
-            </android.support.v7.widget.Toolbar>
-
-        </android.support.design.widget.CollapsingToolbarLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/gray"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:padding="@dimen/home_button_padding"
-                android:text="@string/home_tv1"
-                android:textColor="@color/black_homne_tv"
-                android:textSize="@dimen/text_midle_size" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:padding="@dimen/home_button_padding"
-
-                android:text="@string/home_tv2"
-                android:textColor="@color/black_homne_tv"
-                android:textSize="@dimen/text_midle_size" />
-
-            <TextView
-                android:id="@+id/tv_sort"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:drawableRight="@mipmap/icon_screen"
-                android:gravity="center"
-                android:paddingTop="@dimen/home_button_padding"
-                android:paddingBottom="@dimen/home_button_padding"
-                android:text="@string/home_tv3"
-                android:textColor="@color/black_homne_tv"
-                android:textSize="@dimen/text_midle_size" />
-
-            <TextView
-                android:id="@+id/screen_home"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:drawableRight="@mipmap/icon_screen"
-                android:gravity="center"
-                android:paddingTop="@dimen/home_button_padding"
-                android:paddingRight="@dimen/home_button_padding"
-                android:paddingBottom="@dimen/home_button_padding"
-                android:text="@string/home_tv4"
-                android:textColor="@color/black_homne_tv"
-                android:textSize="@dimen/text_midle_size" />
-        </LinearLayout>
-
-    </android.support.design.widget.AppBarLayout>
+            </android.support.design.widget.AppBarLayout>
 
 
             <android.support.v4.widget.NestedScrollView
@@ -224,23 +223,31 @@
                 android:layout_height="match_parent"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recycle"
+                <com.example.blibrary.loadinglayout.LoadingLayout
+                    android:id="@+id/contentLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    tools:layoutManager="LinearLayoutManager"
-                    tools:listitem="@layout/item_home"
-                    tools:spanCount="4"></android.support.v7.widget.RecyclerView>
+                    app:isFirstVisible="true">
 
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recycle"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        tools:layoutManager="LinearLayoutManager"
+                        tools:listitem="@layout/item_main"
+                        tools:spanCount="4"></android.support.v7.widget.RecyclerView>
+
+
+                </com.example.blibrary.loadinglayout.LoadingLayout>
             </android.support.v4.widget.NestedScrollView>
         </android.support.design.widget.CoordinatorLayout>
 
         <com.scwang.smartrefresh.layout.footer.ClassicsFooter
-                srlClassicsSpinnerStyle="FixedBehind"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+            srlClassicsSpinnerStyle="FixedBehind"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
 
 </android.support.design.widget.CoordinatorLayout>

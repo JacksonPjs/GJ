@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.blibrary.log.Logger;
 import com.example.blibrary.utils.T;
+import com.xiaowei.App.Constants;
 import com.xiaowei.MyApplication;
 import com.xiaowei.R;
 import com.xiaowei.bean.LoginBean;
@@ -17,8 +18,10 @@ import com.xiaowei.bean.LoginOutBean;
 import com.xiaowei.net.NetWorks;
 import com.xiaowei.ui.activity.BaseActivity;
 import com.xiaowei.ui.activity.Guide.GuideActivity;
+import com.xiaowei.ui.activity.Guide.WelcomeActivity;
 import com.xiaowei.ui.activity.Login.LoginActivity;
 import com.xiaowei.utils.AppUtils;
+import com.xiaowei.utils.IntentUtils;
 import com.xiaowei.utils.SharedPreferencesUtils;
 
 import java.nio.Buffer;
@@ -49,6 +52,7 @@ public class PersonalActivity extends BaseActivity {
 
     public void initData() {
         versionTv.setText(AppUtils.getVersionName(activity) + "");
+        name.setText(SharedPreferencesUtils.getParam(activity,"phone","")+"");
     }
 
     public void loginOut() {
@@ -68,12 +72,12 @@ public class PersonalActivity extends BaseActivity {
             public void onNext(LoginOutBean LoginOutBean) {
                 if (LoginOutBean.isData()) {
                     T.ShowToastForLong(activity, "登出成功");
-                    SharedPreferencesUtils.setParam(MyApplication.context, "cookie", "");
-                    SharedPreferencesUtils.savaUser(activity, null, "");
-                    Intent intent = new Intent(activity, GuideActivity.class);
-                    intent.putExtra("flag", "exit");
+//                    SharedPreferencesUtils.setParam(MyApplication.context, "cookie", "");
+//                    SharedPreferencesUtils.savaUser(activity, new LoginBean(), "");
+                    SharedPreferencesUtils.clearAll(activity);
+                    Intent intent = new Intent(activity, WelcomeActivity.class);
                     startActivity(intent);
-                    finish();
+                    MyApplication.instance.Allfinlish();
                 }
             }
         });
@@ -91,6 +95,8 @@ public class PersonalActivity extends BaseActivity {
                 startActivity(intent);
                 break;
             case R.id.about_rl:
+                IntentUtils.GoWeb(activity,Constants.aboutuslUrl,"关于我们");
+
                 break;
             case R.id.contact_rl:
                 intent = new Intent(activity, ContactActivity.class);

@@ -84,7 +84,7 @@ public class ContactActivity extends BaseActivity {
                     }
                 });
 
-                builder.setMessage("400-0651520");
+                builder.setMessage(""+getString(R.string.phonenum));
                 builder.create().show();
                 break;
         }
@@ -97,7 +97,7 @@ public class ContactActivity extends BaseActivity {
                     Manifest.permission.CALL_PHONE}, 1);
         } else {
             Intent intent = new Intent(Intent.ACTION_CALL);
-            intent.setData(Uri.parse("tel:" + "4000651520"));
+            intent.setData(Uri.parse("tel:" + getString(R.string.phonenum)));
             startActivity(intent);
         }
     }

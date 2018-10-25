@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">小薇趣钱</string>
+    <string name="app_name">小微趣钱</string>
     <string name="home_tv1">放款快</string>
     <string name="home_tv2">利息低</string>
     <string name="home_tv3">额度高低</string>
@@ -12,13 +12,13 @@
     <string name="home_title1">er</string>
     <string name="done">重新获取</string>
     <string name="skip">跳过</string>
-    <string name="agreement">已阅读并同意《小微有钱服务条款》</string>
-    <string name="tv_not_readandagree">尚未阅读或同意《小微有钱服务条款》</string>
+    <string name="agreement">已阅读并同意《小微趣钱服务条款》</string>
+    <string name="tv_not_readandagree">尚未阅读或同意服务条》</string>
     <string name="about_us">关于我们</string>
     <string name="contact_us">联系我们</string>
     <string name="exit_login">退出登录</string>
     <string name="version">版本号</string>
-    <string name="phonenum">400-7283728</string>
+    <string name="phonenum">4006-490390</string>
     <string name="notifyTitle">提示</string>
     <string name="location">定位</string>
     <string name="notifyMsg">当前应用缺少必要权限。\n\n请点击\"设置\"-\"权限\"-打开所需权限。</string>

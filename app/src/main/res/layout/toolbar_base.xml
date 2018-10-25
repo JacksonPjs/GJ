@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/title_hight"
     tools:background="@color/colorPrimary"
+    app:contentInsetStart="0dp"
     app:layout_collapseMode="pin">
     <RelativeLayout
         android:layout_width="match_parent"
@@ -18,7 +19,7 @@
             android:layout_centerVertical="true"
             android:padding="@dimen/home_margin"
             android:src="@mipmap/back"
-
+            android:onClick="onBack"
             />
 
         <TextView
@@ -38,6 +39,7 @@
             android:layout_centerVertical="true"
             android:padding="@dimen/home_margin"
             android:src="@mipmap/icon_personal_news"
+            android:visibility="gone"
 
             />
     </RelativeLayout>

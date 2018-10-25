@@ -7,6 +7,7 @@ import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -52,7 +53,7 @@ public class Guide extends ViewPager {
     public void attachIndicator(BannerIndicator bannerIndicator) {
         indicator = bannerIndicator;
         indicator.setImageIndicator(dataSourceSize);
-        setIndicatorSelectItem(1);
+        setIndicatorSelectItem(0);
     }
 
 
@@ -104,7 +105,7 @@ public class Guide extends ViewPager {
         dataSourceSize = data.size();
 
         if (dataSourceSize >= 2) {
-            mDataSource.add(data.get(dataSourceSize - 1));
+//            mDataSource.add(data.get(dataSourceSize - 1));
             mDataSource.addAll(data);
 //            mDataSource.add(data.get(0));
         } else {
@@ -123,8 +124,8 @@ public class Guide extends ViewPager {
             indicator.setImageIndicator(dataSourceSize);
         }
 
-        currentPosition = 1;
-        setCurrentItem(1);
+        currentPosition = 0;
+        setCurrentItem(0);
     }
 
     public void showNextView() {
@@ -132,12 +133,17 @@ public class Guide extends ViewPager {
             return;
         if (mDataSource.size() == currentPosition)
             return;
-
+        if (mDataSource.size() == currentPosition+1){
+            if (onLastItemChangeListener!=null){
+                onLastItemChangeListener.onLastItem(currentPosition);
+            }
+        }
 
         setCurrentItem(currentPosition + 1, true);
         setIndicatorSelectItem(currentPosition);
     }
 
+    boolean isScrolled=false;
     ViewPager.OnPageChangeListener mOnPageChangeListener = new ViewPager.OnPageChangeListener() {
         @Override
         public void onPageScrolled(int position, float baifen, int offset) {
@@ -149,16 +155,34 @@ public class Guide extends ViewPager {
         public void onPageSelected(int position) {
             if (pagerAdapter.getCount() == 0)
                 return;
-            currentPosition = position;
+            if(position>currentPosition){
+//从左向右滑
+                Log.e("onPageSelected","从左向右滑" );
+                currentPosition = position;
+                if (position >= pagerAdapter.getCount()) {
+//                    if (onLastItemChangeListener!=null){
+//                        onLastItemChangeListener.onLastItem();
+//                    }
+                }
+            }
+            if(position<currentPosition) {
+//从右向左滑
+                Log.e("onPageSelected","从右向左滑");
+                currentPosition = position;
+
+            }
+//            currentPosition = position;
             if (position < 1) {
-                currentPosition = pagerAdapter.getCount() - 2;
-            } else if (position >= pagerAdapter.getCount() - 1) {
+//                currentPosition = pagerAdapter.getCount() - 2;
+            } else if (position >= pagerAdapter.getCount()) {
+                currentPosition=pagerAdapter.getCount() - 1;
 //                currentPosition = 1;
             }
             if (onBannerItemChangeListener != null) {
                 onBannerItemChangeListener.onItemChage(position);
             }
-            setIndicatorSelectItem(position);
+
+            setIndicatorSelectItem(currentPosition);
         }
 
         @Override
@@ -167,21 +191,33 @@ public class Guide extends ViewPager {
                 return;
             if (state == ViewPager.SCROLL_STATE_SETTLING) {
 //滑动后自然沉降的状态
+                isScrolled=true;
             } else if (state == ViewPager.SCROLL_STATE_DRAGGING) {
                 //滑动状态
                 currentPosition = getCurrentItem();
+                isScrolled=false;
                 if (currentPosition < 1) {
-                    currentPosition = pagerAdapter.getCount() - 2;
+//                    currentPosition = pagerAdapter.getCount() - 2;
                     setCurrentItem(currentPosition, false);
                 } else if (currentPosition >= pagerAdapter.getCount() - 1) {
+
 //                    currentPosition = 1;
-                    setCurrentItem(currentPosition, false);
+//                    setCurrentItem(currentPosition, false);
 //
                 }
-                pauseScroll();
+//                pauseScroll();
             } else if (state == ViewPager.SCROLL_STATE_IDLE) {
                 //空闲状态
-
+                if (currentPosition >= pagerAdapter.getCount() - 1&& !isScrolled) {
+//                    currentPosition = 1;
+                    if (onLastItemChangeListener!=null){
+                        //最后一页向后滑动
+                        onLastItemChangeListener.onLastItem(currentPosition);
+                    }
+                    isScrolled=true;
+//                    setCurrentItem(currentPosition, false);
+//
+                }
                 setCurrentItem(currentPosition, false);
 
                 resumeScroll();
@@ -213,13 +249,8 @@ public class Guide extends ViewPager {
 
     private void setIndicatorSelectItem(int position) {
         if (indicator == null) return;
-        if (position == 0) {
-            indicator.setSelectItem(dataSourceSize - 1);
-        } else if (position == dataSourceSize + 1) {
-            indicator.setSelectItem(0);
-        } else {
-            indicator.setSelectItem(position - 1);
-        }
+
+            indicator.setSelectItem(position);
     }
 
     private class MyPagerAdapter extends PagerAdapter {
@@ -237,27 +268,7 @@ public class Guide extends ViewPager {
             for (int i = 0; i < data.size(); i++) {
                 ImageView imageView;
                 imageView = bannerDataInit.initImageView();
-                final int finalI = i;
-                imageView.setOnClickListener(
-                        new OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                if (finalI == 0) {
-                                    if (onBannerItemClickListener != null) {
-                                        onBannerItemClickListener.onItemClick(dataSourceSize - 1);
-                                    }
-                                } else if (finalI == dataSourceSize + 1) {
-                                    if (onBannerItemClickListener != null) {
-                                        onBannerItemClickListener.onItemClick(0);
-                                    }
-                                } else {
-                                    if (onBannerItemClickListener != null) {
-                                        onBannerItemClickListener.onItemClick(finalI - 1);
-                                    }
-                                }
 
-                            }
-                        });
 
                 bannerDataInit.initImgData(imageView, mDataSource.get(i));
                 viewList.add(imageView);

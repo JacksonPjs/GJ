@@ -3,6 +3,7 @@ package com.xiaowei.ui.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -48,6 +49,7 @@ import com.example.blibrary.citypicker.model.City;
 import com.example.blibrary.citypicker.model.HotCity;
 import com.example.blibrary.citypicker.model.LocateState;
 import com.example.blibrary.citypicker.model.LocatedCity;
+import com.example.blibrary.loadinglayout.LoadingLayout;
 import com.example.blibrary.utils.PermissionUtils.PermissionHelper;
 import com.example.blibrary.utils.PermissionUtils.PermissionInterface;
 import com.example.blibrary.utils.StringUtil;
@@ -63,6 +65,7 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 import com.xiaowei.bean.AdvertBean;
 import com.xiaowei.bean.BannerBean;
+import com.xiaowei.bean.BaseBean;
 import com.xiaowei.bean.NoticeBean;
 import com.xiaowei.bean.ScreenBean;
 import com.xiaowei.net.ErrorUtils.ShowError;
@@ -74,7 +77,10 @@ import com.xiaowei.net.NetWorks;
 import com.xiaowei.ui.Adapter.itemTextviewAdapter;
 import com.xiaowei.ui.activity.Login.LoginActivity;
 import com.xiaowei.ui.activity.Personal.PersonalActivity;
+import com.xiaowei.ui.activity.web.WebActivity;
+import com.xiaowei.utils.DeviceUtils;
 import com.xiaowei.utils.IntentUtils;
+import com.xiaowei.utils.SharedPreferencesUtils;
 import com.xiaowei.widget.Dialog.AdvertDialog;
 import com.xiaowei.widget.Dialog.CustomDialog;
 import com.xiaowei.widget.DividerItemDecoration;
@@ -118,6 +124,8 @@ public class MainActivity extends BaseActivity implements
     @Bind(R.id.refreshLayout)
     RefreshLayout refreshLayout;
 
+    @Bind(R.id.contentLayout)
+    LoadingLayout contentLayout;
     HomeAdapter adapter;
     List<ProductListBean.DataBean.contentBean> datas;
     private int index = 0;
@@ -129,6 +137,7 @@ public class MainActivity extends BaseActivity implements
     String maxLoan = "";//最大金额
     String minTerm = "";//最低期限(天)
     String maxTerm = "";//最高期限
+    String condition = "";//
     //    String condition="speed";//精准speed/rate/amount
     int sort = 1;//1/-1  （1：升序，-1：降序）
     boolean isfirst = true;
@@ -166,7 +175,7 @@ public class MainActivity extends BaseActivity implements
     PopupWindow PopupWindow;
     TextView sortDi, sortGao;
 
-    List<String> drawables;
+    List<BannerBean.BannerData> drawables;
     List<NoticeBean.NoticeData> notices;
 
     //声明AMapLocationClient类对象
@@ -226,6 +235,7 @@ public class MainActivity extends BaseActivity implements
         initRefresh();
         getData(0);
         getNoticeData();
+        contentLayout.setEmptyImage(R.mipmap.home_empty).setEmptyText("");
         //权限
         permissionHelper = new PermissionHelper(this, this);
         permissionHelper.requestPermissions();
@@ -273,8 +283,9 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void initImgData(ImageView imageView, Object imgPath) {
 //                Logger.d("initImgData" + NetService.API_SERVER_Url + ((OneBean.BannersBean) imgPath).getImgPath());
+                BannerBean.BannerData bannerData = (BannerBean.BannerData) imgPath;
                 Glide.with(activity)
-                        .load(imgPath)
+                        .load(bannerData.getImage())
                         .error(R.mipmap.banner)
                         .into(imageView);
 
@@ -286,7 +297,6 @@ public class MainActivity extends BaseActivity implements
 //                    imageView.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.mipmap.ic_launcher));
             }
         });
-        banner.setDataSource(drawables);
 
         //----------------------indicator start------------------------------
         bannerIndicator = (BannerIndicator) findViewById(R.id.indicator);
@@ -302,8 +312,15 @@ public class MainActivity extends BaseActivity implements
         banner.setOnBannerItemClickListener(new Banner.OnBannerItemClickListener() {
             @Override
             public void onItemClick(int position) {
+
+
 //                Toast.makeText(getBaseContext(), "position:" + position, Toast.LENGTH_SHORT).show();
-                IntentUtils.GoChrome(activity);
+                IntentUtils.GoWeb(activity, drawables.get(position).getUrl(), drawables.get(position).getName());
+                commitData(SharedPreferencesUtils.getParam(activity, "userid", "") + "", drawables.get(position).getId() + "");
+//                IntentUtils.GoChrome(activity);
+//                Intent intent=new Intent(activity,WebActivity.class);
+//                intent.putExtra("url","http:www.baidu.com");
+//                activity.startActivity(intent);
 
             }
         });
@@ -334,12 +351,9 @@ public class MainActivity extends BaseActivity implements
             public void OnItemViewClick(int pos) {
 //                Intent intent = new Intent(activity, DesignActivity.class);
 //                startActivity(intent);
-                Intent intent = new Intent();
-                intent.setAction("android.intent.action.VIEW");
-                Uri content_url = Uri.parse("http://api.baiyiwangluo.com/h5/invite.jsp");//此处填链接
-                intent.setData(content_url);
-                startActivity(intent);
-
+//              IntentUtils.GoChrome(activity);
+                IntentUtils.GoWeb(activity, datas.get(pos).getJumpLink(), datas.get(pos).getName());
+                commitData(SharedPreferencesUtils.getParam(activity, "userid", "") + "", datas.get(pos).getId() + "");
 
             }
         });
@@ -356,6 +370,8 @@ public class MainActivity extends BaseActivity implements
 //                mData.clear();
                 page = 1;
                 getData(0);
+                getBannerData();
+                getNoticeData();
 //                mNameAdapter.notifyDataSetChanged();
                 refreshlayout.finishRefresh();
             }
@@ -425,8 +441,8 @@ public class MainActivity extends BaseActivity implements
                         locationCity = aMapLocation.getCity();
                         locationProvince = aMapLocation.getProvince();
                         city.setText(locationCity + "");
-
-                        CityPicker.getInstance().locateComplete(new LocatedCity(locationCity, locationProvince, ""), LocateState.SUCCESS);
+                        CityPicker.getInstance().setLocatedCity(new LocatedCity(locationCity, locationProvince, ""));
+//                        CityPicker.getInstance().locateComplete(new LocatedCity(locationCity, locationProvince, ""), LocateState.SUCCESS);
                         Log.e("Amapsuccess", "location Error, ErrCode:"
                                 + aMapLocation.getCity() + ", errInfo:"
                                 + aMapLocation.getErrorInfo());
@@ -527,7 +543,15 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onNext(AdvertBean advertBean) {
                 advertDialog = new AdvertDialog(activity, advertBean);
-                showDialog();
+                AdvertBean.AdverBean posBean = null;
+                for (int i = 0; i < advertBean.getData().size(); i++) {
+                    if (advertBean.getData().get(i).getPosition() == 1) {
+                        posBean = advertBean.getData().get(i);
+
+                    }
+                }
+                if (posBean != null)
+                    showDialog(posBean);
             }
         });
 
@@ -551,9 +575,10 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onNext(BannerBean bannerBean) {
                 if (bannerBean.getCode() == 0) {
-                    for (int i = 0; i <= bannerBean.getData().size(); i++) {
+                    drawables.clear();
+                    drawables.addAll(bannerBean.getData());
+                    banner.setDataSource(drawables);
 
-                    }
                 }
             }
         });
@@ -588,12 +613,12 @@ public class MainActivity extends BaseActivity implements
      * 获取数据
      * */
     public void getData(final int type) {
-
+        if (type == 0)
+            contentLayout.setStatus(LoadingLayout.Loading);
         NetWorks.productList(page + "", pageSize + "", minLoan + "", maxLoan + "",
-                minTerm + "", maxTerm + "", sort + "", new Subscriber<ProductListBean>() {
+                minTerm + "", maxTerm + "", condition + "", sort + "", new Subscriber<ProductListBean>() {
                     @Override
                     public void onCompleted() {
-
                     }
 
                     @Override
@@ -617,6 +642,9 @@ public class MainActivity extends BaseActivity implements
             datas.clear();
             if (contentBean.size() > 0) {
                 datas.addAll(contentBean);
+                contentLayout.setStatus(LoadingLayout.Success);
+            } else {
+                contentLayout.setStatus(LoadingLayout.Empty);
             }
         }
 
@@ -626,6 +654,7 @@ public class MainActivity extends BaseActivity implements
             if (contentBean.size() > 0) {
                 datas.addAll(contentBean);
             } else {
+//                contentLayout.setStatus(LoadingLayout.Empty);
                 T.ShowToastForLong(activity, "没有新数据");
                 refreshLayout.finishLoadMoreWithNoMoreData();
                 refreshLayout.setNoMoreData(false);
@@ -639,7 +668,7 @@ public class MainActivity extends BaseActivity implements
     }
 
     /*点击事件*/
-    @OnClick({R.id.gonggao, R.id.screen_home, R.id.call, R.id.tv_sort, R.id.mine})
+    @OnClick({R.id.gonggao, R.id.screen_home, R.id.call, R.id.tv_sort, R.id.mine, R.id.tv_rate, R.id.tv_speed})
     public void onClick(View view) {
         Intent intent = null;
         switch (view.getId()) {
@@ -653,24 +682,46 @@ public class MainActivity extends BaseActivity implements
                 initPopuptWindow(popview);
 
                 break;
-            case R.id.call://打电话
+            case R.id.call://定位
 //                if (isNeedCheck) {
 ////                    checkPermissions(needPermissions);
 ////                }
 
-                PickCity(null, null);
+                PickCity();
 
                 break;
             case R.id.tv_sort://
                 View popsortview = View.inflate(MainActivity.this, R.layout.pop_sort_home, null);
                 initSortPopuptWindow(popsortview);
                 break;
+            case R.id.tv_speed://速度快
+                condition = "speed";
+                page = 1;
+                pageSize = 10;
+                minLoan = "";//最小金额
+                maxLoan = "";//最大金额
+                minTerm = "";//最低期限(天)
+                maxTerm = "";//最高期限
+                sort = 1;
+                getData(0);
+                break;
+            case R.id.tv_rate://利息低
+                condition = "rate";
+                page = 1;
+                pageSize = 10;
+                minLoan = "";//最小金额
+                maxLoan = "";//最大金额
+                minTerm = "";//最低期限(天)
+                maxTerm = "";//最高期限
+                sort = 1;
+                getData(0);
+                break;
         }
 
     }
 
     //广告弹窗
-    public void showDialog() {
+    public void showDialog(final AdvertBean.AdverBean posBean) {
         if (isfirst) {
             advertDialog.setOnClickListener(new AdvertDialog.OnClickListener() {
                 @Override
@@ -682,11 +733,8 @@ public class MainActivity extends BaseActivity implements
                 public void onDraw() {
                     isfirst = false;
 
-                    Intent intent = new Intent();
-                    intent.setAction("android.intent.action.VIEW");
-                    Uri content_url = Uri.parse("http://api.baiyiwangluo.com/h5/invite.jsp");//此处填链接
-                    intent.setData(content_url);
-                    startActivity(intent);
+                    IntentUtils.GoChrome(activity);
+                    commitData(SharedPreferencesUtils.getParam(activity, "userid", "") + "", posBean.getId() + "");
 
 //                    SharedPreferencesUtils.setIsFirst(activity, false);
 
@@ -697,13 +745,33 @@ public class MainActivity extends BaseActivity implements
         }
     }
 
+    /*提交广告数据*/
+    public void commitData(String userid, String adid) {
+        NetWorks.adAndNoticeFlowIncrease(userid, adid, DeviceUtils.getUniqueId(activity), new Subscriber<BaseBean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(BaseBean baseBean) {
+
+            }
+        });
+    }
+
     /*
      * 选择城市
      * */
     private List<HotCity> hotCities;
 
     /*定位选择*/
-    public void PickCity(String lCity, String province) {
+    public void PickCity() {
         if (true) {
             hotCities = new ArrayList<>();
             hotCities.add(new HotCity("北京", "北京", "101010100"));
@@ -715,15 +783,10 @@ public class MainActivity extends BaseActivity implements
             hotCities = null;
         }
         final LocatedCity locatedCity = null;
-        if (StringUtil.isNullOrEmpty(lCity)) {
-//            locatedCity = null;
-        } else {
-            locatedCity.setName(locationCity);
-            locatedCity.setProvince(locationProvince + "");
-        }
+
         CityPicker.getInstance()
                 .setFragmentManager(getSupportFragmentManager())
-                .setLocatedCity(locatedCity)
+//                .setLocatedCity(locatedCity)
 //                .enableAnimation(enable)
 //                .setAnimationStyle(anim)
                 .setHotCities(hotCities)
@@ -732,11 +795,11 @@ public class MainActivity extends BaseActivity implements
                     public void onPick(int position, City data) {
 //                        currentTV.setText(data == null ? "杭州" : String.format("当前城市：%s，%s", data.getName(), data.getCode()));
                         if (data != null) {
-                            Toast.makeText(
-                                    getApplicationContext(),
-                                    String.format("点击的数据：%s，%s", data.getName(), data.getCode()),
-                                    Toast.LENGTH_SHORT)
-                                    .show();
+//                            Toast.makeText(
+//                                    getApplicationContext(),
+//                                    String.format("点击的数据：%s，%s", data.getName(), data.getCode()),
+//                                    Toast.LENGTH_SHORT)
+//                                    .show();
                             city.setText("" + data.getName());
                         }
                     }
@@ -868,7 +931,15 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onClick(View v) {
                 PopupWindow.dismiss();
+                condition = "amount";
+                page = 1;
+                pageSize = 10;
+                minLoan = "";//最小金额
+                maxLoan = "";//最大金额
+                minTerm = "";//最低期限(天)
+                maxTerm = "";//最高期限
                 sort = -1;
+                page = 1;
                 getData(0);
             }
         });
@@ -876,7 +947,15 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onClick(View v) {
                 PopupWindow.dismiss();
+                condition = "amount";
                 sort = 1;
+                page = 1;
+                pageSize = 10;
+                minLoan = "";//最小金额
+                maxLoan = "";//最大金额
+                minTerm = "";//最低期限(天)
+                maxTerm = "";//最高期限
+                page = 1;
                 getData(0);
             }
         });
@@ -1074,7 +1153,7 @@ public class MainActivity extends BaseActivity implements
         del.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPopupWindow.dismiss();
+//                mPopupWindow.dismiss();
                 page = 1;
                 pageSize = 10;
                 minLoan = "";//最小金额
@@ -1083,7 +1162,8 @@ public class MainActivity extends BaseActivity implements
                 maxTerm = "";//最高期限
 //    String condition="speed";//精准speed/rate/amount
                 sort = 1;//1/-1  （1：升序，-1：降序）
-                getData(1);
+//                getData(1);
+                loanAdapter.setResetting();
             }
         });
 
@@ -1091,6 +1171,7 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onClick(View v) {
                 mPopupWindow.dismiss();
+                page = 1;
                 getData(0);
             }
         });

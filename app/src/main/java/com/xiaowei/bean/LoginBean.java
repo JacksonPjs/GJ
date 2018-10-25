@@ -6,7 +6,7 @@ public class LoginBean {
 
 
   private int code;
-  private int data;
+  private int data;//useid
   private String msg;
 
   public int getCode() {

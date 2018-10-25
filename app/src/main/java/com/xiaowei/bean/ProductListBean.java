@@ -78,6 +78,16 @@ public class ProductListBean {
             private String dayRateStr;
             private String loanTimeStr;
             private String synopsis;
+            private String jumpLink;
+
+            public String getJumpLink() {
+                return jumpLink;
+            }
+
+            public void setJumpLink(String jumpLink) {
+                this.jumpLink = jumpLink;
+            }
+
             ;
 
             public int getId() {

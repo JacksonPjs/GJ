@@ -60,7 +60,7 @@ public class BannerIndicator extends LinearLayout {
             } else {
                 layoutParams = new LayoutParams(widthAndHeight, widthAndHeight);
             }
-            layoutParams.setMargins(0, 10, 10, 10);
+            layoutParams.setMargins(50, 10, 10, 10);
             addView(imageView, layoutParams);
         }
     }

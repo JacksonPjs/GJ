@@ -188,7 +188,7 @@ public class RefreshActivity extends BaseActivity{
     public void getData() {
 
         NetWorks.productList(1 + "", 10 + "",   "",  "",
-                "",  "", "", new Subscriber<ProductListBean>() {
+                "",  "", "","", new Subscriber<ProductListBean>() {
                     @Override
                     public void onCompleted() {
 

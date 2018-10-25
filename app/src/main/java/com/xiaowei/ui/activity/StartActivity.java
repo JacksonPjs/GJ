@@ -16,6 +16,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.example.blibrary.utils.PermissionUtils.PermissionHelper;
 import com.example.blibrary.utils.PermissionUtils.PermissionInterface;
@@ -31,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class StartActivity extends BaseActivity {
+public class StartActivity extends Activity {
     private final int REQUEST_VIDEO_PERMISSION = 1;
     private final static String TAG = "StartActivity";
     Activity activity;
@@ -43,6 +45,14 @@ public class StartActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //无title
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //全屏
+        getWindow().setFlags(WindowManager.LayoutParams. FLAG_FULLSCREEN ,
+                WindowManager.LayoutParams. FLAG_FULLSCREEN);
+
+
+
         startMain();
 
 
@@ -53,10 +63,7 @@ public class StartActivity extends BaseActivity {
         boolean isFirstOpen = SharedPreferencesUtils.getIsFirst(this);
         // 如果是第一次启动，则先进入功能引导页
         if (isFirstOpen) {
-            intent = new Intent(this, GuideActivity.class);
-            intent.putExtra("flag", "start");
-            startActivity(intent);
-            finish();
+        mHandler.sendEmptyMessageDelayed(1, 0);
             return;
         } else {
             // 如果不是第一次启动app，则正常显示启动屏

@@ -56,8 +56,10 @@
         <activity android:name=".ui.activity.Personal.NewsActivity"></activity>
         <activity android:name=".ui.activity.Personal.ContactActivity"></activity>
         <activity android:name=".ui.activity.Guide.AdvertActivity"></activity>
+        <activity android:name=".ui.activity.web.WebActivity"></activity>
+        <activity android:name=".ui.activity.Guide.WelcomeActivity"></activity>
 
-        <meta-data android:name="com.amap.api.v2.apikey" android:value="a692364438170bde65ff946c1e08b56d">
+        <meta-data android:name="com.amap.api.v2.apikey" android:value="e8486e6ce16f339fe1025f04b7347288">
 
         </meta-data>
         <service android:name="com.amap.api.location.APSService"></service>

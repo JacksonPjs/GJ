@@ -13,13 +13,13 @@
     <dimen name="home_four_midle_top">70dp</dimen>
     <dimen name="home_four_margin">5dp</dimen>
     <dimen name="home_five_margin">30dp</dimen>
-    <dimen name="home_button_padding">10dp</dimen>
+    <dimen name="home_button_padding">12dp</dimen>
 
 
     <dimen name="title_hight">40dp</dimen>
     <dimen name="title_size">18sp</dimen>
     <dimen name="title_margin">16dp</dimen>
-    <dimen name="banner_hight">150dp</dimen>
+    <dimen name="banner_hight">180dp</dimen>
     <dimen name="item_tv_margin">8dp</dimen>
 
 

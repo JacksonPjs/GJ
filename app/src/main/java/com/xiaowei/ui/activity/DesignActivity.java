@@ -177,7 +177,7 @@ public class DesignActivity extends BaseActivity {
     public void getData(final int type) {
 
         NetWorks.productList(page + "", pageSize + "", minLoan + "", maxLoan + "",
-                minTerm + "", maxTerm + "", sort + "", new Subscriber<ProductListBean>() {
+                minTerm + "", maxTerm + "", "",sort + "", new Subscriber<ProductListBean>() {
                     @Override
                     public void onCompleted() {
 

@@ -2,6 +2,7 @@ package com.xiaowei.net;
 
 import com.xiaowei.bean.AdvertBean;
 import com.xiaowei.bean.BannerBean;
+import com.xiaowei.bean.BaseBean;
 import com.xiaowei.bean.LoginBean;
 import com.xiaowei.bean.LoginOutBean;
 import com.xiaowei.bean.NoticeBean;
@@ -26,7 +27,7 @@ public interface NetService {
      */
 //    @POST("login.html")
     @POST("/user/login")
-    Observable<LoginBean> login(@Query("phone") String phone, @Query("validateCode") String validateCode, @Query("registerClient") String registerClient );
+    Observable<LoginBean> login(@Query("phone") String phone, @Query("validateCode") String validateCode, @Query("registerClient") String registerClient, @Query("uniquelyIdentified") String uniquelyIdentified );
 
     /**
      * /**
@@ -54,7 +55,7 @@ public interface NetService {
      */
     @GET("/product/productList")
     Observable<ProductListBean> productList(@Query("page") String page, @Query("size") String pageSize, @Query("minLoan") String minLoan
-            , @Query("maxLoan") String maxLoan, @Query("minTerm") String minTerm, @Query("maxTerm") String maxTerm, @Query("sort") String sort);
+            , @Query("maxLoan") String maxLoan, @Query("minTerm") String minTerm, @Query("maxTerm") String maxTerm, @Query("condition") String condition, @Query("sort") String sort);
 /**
      * 4..获取公告
      */
@@ -65,6 +66,16 @@ public interface NetService {
      */
     @GET("/user/logout")
     Observable<LoginOutBean> loginOut();
+ /**
+     * 6.产品流量增加（点击产品后）
+     */
+    @GET("/product/flowIncrease")
+    Observable<BaseBean> productFlowIncrease(@Query("userId") String userId, @Query("productId") String productId);
+ /**
+     * 7.广告流量增加（点击广告后）
+     */
+    @GET("/adAndNotice/flowIncrease")
+    Observable<BaseBean> adAndNoticeFlowIncrease(@Query("userId") String userId,@Query("adId") String adId,@Query("uniquelyIdentified") String androidid);
 
 
 }

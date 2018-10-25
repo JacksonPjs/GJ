@@ -2,6 +2,7 @@ package com.xiaowei.net;
 
 import com.xiaowei.bean.AdvertBean;
 import com.xiaowei.bean.BannerBean;
+import com.xiaowei.bean.BaseBean;
 import com.xiaowei.bean.LoginBean;
 import com.xiaowei.bean.LoginOutBean;
 import com.xiaowei.bean.NoticeBean;
@@ -21,8 +22,8 @@ public class NetWorks extends RetrofitUtils {
      *
      * @param observer
      */
-    public static void login(String cellPhone, String validateCode, String registerClient, Subscriber<LoginBean> observer) {
-        setSubscribe(service.login(cellPhone, validateCode, registerClient), observer);
+    public static void login(String cellPhone, String validateCode, String registerClient,String androidid, Subscriber<LoginBean> observer) {
+        setSubscribe(service.login(cellPhone, validateCode, registerClient,androidid), observer);
     }
 
     /**
@@ -71,8 +72,8 @@ public class NetWorks extends RetrofitUtils {
      * @param sort
      * @param observer
      */
-    public static void productList(String page, String pageSize, String minLoan, String maxLoan, String minTerm, String maxTerm, String sort, Subscriber<ProductListBean> observer) {
-        setSubscribe(service.productList(page, pageSize, minLoan, maxLoan, minTerm, maxTerm, sort), observer);
+    public static void productList(String page, String pageSize, String minLoan, String maxLoan, String minTerm, String maxTerm, String condition,String sort, Subscriber<ProductListBean> observer) {
+        setSubscribe(service.productList(page, pageSize, minLoan, maxLoan, minTerm, maxTerm,condition, sort), observer);
     }
 
     /*
@@ -81,6 +82,21 @@ public class NetWorks extends RetrofitUtils {
      */
     public static void getYzm(String phone, Subscriber<YzmBean> observer) {
         setSubscribe(service.getValidateCode(phone), observer);
+    }
+
+    /*
+     *广告流量增加（点击广告后）
+     * @param observer
+     */
+    public static void adAndNoticeFlowIncrease(String userId, String adId,String androidid,Subscriber<BaseBean> observer) {
+        setSubscribe(service.adAndNoticeFlowIncrease(userId,adId,androidid), observer);
+    }
+    /*
+     *产品流量增加（点击产品后）
+     * @param observer
+     */
+    public static void productFlowIncrease(String userId, String productId,Subscriber<BaseBean> observer) {
+        setSubscribe(service.productFlowIncrease(userId,productId), observer);
     }
 
 

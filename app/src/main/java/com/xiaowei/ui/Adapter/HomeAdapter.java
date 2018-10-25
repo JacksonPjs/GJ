@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.xiaowei.R;
 import com.xiaowei.bean.ProductListBean;
 import com.xiaowei.net.NetService;
+import com.xiaowei.widget.BImageView.CustomRoundAngleImageView;
 
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_home, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_main, parent, false);
         return new ViewHolder(view);
     }
 
@@ -71,7 +72,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
         holder.money.setText(builder);
 
-        String str3 = "参考月利率:";
+        String str3 = "参考日利率:";
         String str4 = "" + d.getDayRateStr();
         SpannableStringBuilder builder1 = new SpannableStringBuilder(str3 + str4);
         builder1.setSpan(new ForegroundColorSpan(Color.parseColor("#F9593D")),
@@ -123,7 +124,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         @Bind(R.id.tv_pos)
         TextView tv_pos;
         @Bind(R.id.connect_usb_bt)
-        ImageView imageView;
+        CustomRoundAngleImageView imageView;
 
 
         ViewHolder(View view) {

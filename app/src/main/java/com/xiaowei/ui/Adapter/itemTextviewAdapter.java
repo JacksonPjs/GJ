@@ -2,6 +2,7 @@ package com.xiaowei.ui.Adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,8 +38,9 @@ public class itemTextviewAdapter extends RecyclerView.Adapter<itemTextviewAdapte
         this.onItemClickLitener = mOnItemClickLitener;
     }
 
-    public void setSelection(int position) {
-        this.select = position;
+
+    public void setResetting() {
+        mAdapter.setSelectedList(0);
         notifyDataSetChanged();
     }
     @Override
@@ -53,7 +55,6 @@ public class itemTextviewAdapter extends RecyclerView.Adapter<itemTextviewAdapte
         layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
         holder.title.setText(datas.get(position).getTitle()+"");
         final LayoutInflater mInflater = LayoutInflater.from(context);
-
         holder.flowLayout.setAdapter(mAdapter=new TagAdapter<String>(datas.get(position).getName()) {
             @Override
             public View getView(FlowLayout parent, int position, String o) {
@@ -63,12 +64,21 @@ public class itemTextviewAdapter extends RecyclerView.Adapter<itemTextviewAdapte
                 return tv;
             }
         });
-        mAdapter.setSelectedList(0);//预先设置选中
+        //预先设置选中
+//        mAdapter.setSelectedList(1,3,5,7,8,9);
+//获得所有选中的pos集合
+//        holder.flowLayout.getSelectedList();
+//        if (position==1)
+//        mAdapter.setSelectedList(1);//预先设置选中
+//        if (position==0){
+            mAdapter.setSelectedList(0);//预先设置选中
+//        }
         holder.flowLayout.setOnTagClickListener(new TagFlowLayout.OnTagClickListener()
         {
             @Override
             public boolean onTagClick(View view, int posi, FlowLayout parent)
             {
+                Log.e("onTagClick==",posi+"");
 //                Toast.makeText(context, datas.get(position).getName().get(posi), Toast.LENGTH_SHORT).show();
 
                 if (onItemClickLitener!=null){

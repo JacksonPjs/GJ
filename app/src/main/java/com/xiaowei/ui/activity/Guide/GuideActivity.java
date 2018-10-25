@@ -12,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -42,19 +44,24 @@ import butterknife.OnClick;
 /*
  * 引导页
  * */
-public class GuideActivity extends BaseActivity implements PermissionInterface {
+public class GuideActivity extends Activity implements PermissionInterface {
     Activity activity;
     @Bind(R.id.guide_banner)
     Guide banner;
     @Bind(R.id.indicator)
     BannerIndicator bannerIndicator;
 
-    @Bind(R.id.bt_next)
-    TextView next;
+
     List<String> drawables;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //无title
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //全屏
+        getWindow().setFlags(WindowManager.LayoutParams. FLAG_FULLSCREEN ,
+                WindowManager.LayoutParams. FLAG_FULLSCREEN);
         setContentView(R.layout.activity_guide);
         ButterKnife.bind(this);
         activity = this;
@@ -64,10 +71,11 @@ public class GuideActivity extends BaseActivity implements PermissionInterface {
 
 
     private void initData() {
-       drawables = new ArrayList<>();
+        drawables = new ArrayList<>();
         drawables.add("1");
         drawables.add("2");
         drawables.add("3");
+//        drawables.add("4");
         banner.setInterval(3000);
         banner.setPageChangeDuration(300);
         banner.setBannerDataInit(new Banner.BannerDataInit() {
@@ -79,13 +87,14 @@ public class GuideActivity extends BaseActivity implements PermissionInterface {
             @Override
             public void initImgData(ImageView imageView, Object imgPath) {
                 if (imgPath.equals("1"))
-                    imageView.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.mipmap.banner));
+                    imageView.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.mipmap.bg_guide1));
                 if (imgPath.equals("2"))
-                    imageView.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.mipmap.icon_call));
+                    imageView.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.mipmap.bg_guide2));
 
                 if (imgPath.equals("3"))
-                    imageView.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.mipmap.ic_launcher));
-
+                    imageView.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.mipmap.bg_guide3));
+                if (imgPath.equals("4"))
+                    imageView.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.mipmap.bg_guide4));
             }
         });
         banner.setDataSource(drawables);
@@ -93,8 +102,8 @@ public class GuideActivity extends BaseActivity implements PermissionInterface {
         //----------------------indicator start------------------------------
         bannerIndicator = (BannerIndicator) findViewById(R.id.indicator);
         bannerIndicator.setIndicatorSource(
-                ContextCompat.getDrawable(getBaseContext(), R.mipmap.zuobiao_dangqian_banner),//select
-                ContextCompat.getDrawable(getBaseContext(), R.mipmap.baisezuobiao_banner),//unselect
+                ContextCompat.getDrawable(getBaseContext(), R.drawable.shape_banner),//select
+                ContextCompat.getDrawable(getBaseContext(), R.drawable.shape_banner_un),//unselect
                 50//widthAndHeight
         );
         banner.attachIndicator(bannerIndicator);
@@ -105,7 +114,7 @@ public class GuideActivity extends BaseActivity implements PermissionInterface {
             @Override
             public void onItemClick(int position) {
 //                Toast.makeText(getBaseContext(), "position:" + position, Toast.LENGTH_SHORT).show();
-                IntentUtils.GoChrome(activity);
+//                IntentUtils.GoChrome(activity);
 
             }
         });
@@ -113,45 +122,34 @@ public class GuideActivity extends BaseActivity implements PermissionInterface {
             @Override
             public void onItemChage(int position) {
 //                Toast.makeText(getBaseContext(), "position:" + position, Toast.LENGTH_SHORT).show();
-                Log.e("pos==",""+position);
-                if (position==drawables.size()){
-                    next.setVisibility(View.VISIBLE);
-                }else {
-                    next.setVisibility(View.GONE);
+                Log.e("pos==", "" + position);
+                if (position == drawables.size()) {
+//                    next.setVisibility(View.VISIBLE);
+                } else {
+//                    next.setVisibility(View.GONE);
                 }
             }
         });
+        banner.setOnLastItemChangeListener(new Guide.OnLastItemChangeListener() {
+            @Override
+            public void onLastItem(int position) {
+                Intent intent=new Intent(activity,WelcomeActivity.class);
+                startActivity(intent);
+                activity.finish();
+            }
 
 
-        String flag = getIntent().getStringExtra("flag");
-        if (flag.equals("exit")) {
+        });
 
-            fromExit();
-        }
+
+
         SharedPreferencesUtils.setIsFirst(this, false);
-        PermissionHelper helpe=new PermissionHelper(this,this);
+        PermissionHelper helpe = new PermissionHelper(this, this);
         helpe.requestPermissions();
     }
 
-    @OnClick({R.id.bt_next})
-    public void onClick(View view) {
-        Intent intent = null;
-        switch (view.getId()) {
-            case R.id.bt_next:
-                intent=new Intent(activity,LoginActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-        }
-    }
 
-    /*退出登陆后进入该界面
-     * */
-    public void fromExit() {
-//        viewPager.setCurrentItem(2);
-//        banner.s
-        banner.setCurrentItem(drawables.size());
-    }
+
 
     @Override
     protected void onPause() {
@@ -164,6 +162,7 @@ public class GuideActivity extends BaseActivity implements PermissionInterface {
         super.onResume();
         banner.resumeScroll();
     }
+
     /**
      * 需要进行检测的权限数组
      */

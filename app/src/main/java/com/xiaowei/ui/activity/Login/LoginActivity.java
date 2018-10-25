@@ -16,12 +16,16 @@ import com.example.blibrary.log.Logger;
 import com.example.blibrary.utils.LoginRegisterUtils;
 import com.example.blibrary.utils.T;
 import com.example.blibrary.utils.TimeUtils;
+import com.xiaowei.App.Constants;
 import com.xiaowei.R;
 import com.xiaowei.bean.LoginBean;
 import com.xiaowei.bean.YzmBean;
 import com.xiaowei.net.NetWorks;
 import com.xiaowei.ui.activity.BaseActivity;
 import com.xiaowei.ui.activity.MainActivity;
+import com.xiaowei.ui.activity.web.WebActivity;
+import com.xiaowei.utils.DeviceUtils;
+import com.xiaowei.utils.IntentUtils;
 import com.xiaowei.utils.SharedPreferencesUtils;
 
 import java.net.ConnectException;
@@ -77,23 +81,33 @@ public class LoginActivity extends BaseActivity {
         });
     }
 
-    @OnClick({R.id.get_regist, R.id.regist_go})
+    @OnClick({R.id.get_regist, R.id.regist_go,R.id.protocol})
     public void onClick(View view) {
         Intent intent = null;
         switch (view.getId()) {
+            case R.id.protocol:
+//                intent=new Intent(activity,WebActivity.class);
+//                intent.putExtra("url","http://47.106.123.95:9999/protocol.html");
+//                startActivity(intent);
+                IntentUtils.GoWeb(activity,Constants.protocolUrl,"服务条款");
+
+                break;
             case R.id.get_regist:
+                if (LoginRegisterUtils.isNullOrEmpty(phone)) {
+                    T.ShowToastForShort(this, "手机号码未输入");
+                    return;
+                }
+
+                if (!LoginRegisterUtils.isPhone(phone)) {
+                    T.ShowToastForShort(this, "手机号码不正确");
+                    return;
+                }
+
                 getYzm();
-                TimeUtils.timerStart(30 * 1000, 1000);
+                TimeUtils.timerStart(60 * 1000, 1000);
                 break;
             case R.id.regist_go:
-//                 intent=new Intent(activity,MainActivity.class);
-//                startActivity(intent);
                 loginTerm();
-
-//                loginTerm();
-//                regist(phone.getText().toString(), password.getText().toString(), yzm.getText().toString(), tuijian.getText().toString() + "");
-
-
                 break;
         }
     }
@@ -120,7 +134,7 @@ public class LoginActivity extends BaseActivity {
 
 
     public void login() {
-        NetWorks.login(phone.getText().toString(), yzm.getText().toString(), "2", new Subscriber<LoginBean>() {
+        NetWorks.login(phone.getText().toString(), yzm.getText().toString(), "2",DeviceUtils.getUniqueId(activity), new Subscriber<LoginBean>() {
             @Override
             public void onCompleted() {
 
@@ -139,7 +153,7 @@ public class LoginActivity extends BaseActivity {
                 if (loginBean.getCode() == 0) {
                     T.ShowToastForShort(activity, "登录成功");
 //                    SharedPreferencesUtils.setIsLogin(activity,true);
-                    SharedPreferencesUtils.savaUser(activity,loginBean,"");
+                    SharedPreferencesUtils.savaUser(activity,loginBean,phone.getText().toString());
                     Intent intent = new Intent(activity, MainActivity.class);
                     startActivity(intent);
                     TimeUtils.timerCancel();
