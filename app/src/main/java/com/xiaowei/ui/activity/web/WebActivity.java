@@ -1,8 +1,10 @@
 package com.xiaowei.ui.activity.web;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -10,6 +12,8 @@ import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -20,12 +24,13 @@ import com.example.blibrary.log.Logger;
 import com.xiaowei.R;
 import com.xiaowei.ui.activity.BaseActivity;
 import com.xiaowei.ui.activity.MainActivity;
+import com.xiaowei.utils.IntentUtils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class WebActivity extends BaseActivity {
-
+    Activity activity;
     @Bind(R.id.webView)
     WebView webView;
     @Bind(R.id.contentLayout)
@@ -35,6 +40,7 @@ public class WebActivity extends BaseActivity {
 
     String url;
     String tv;
+    String downloadLink;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Override
@@ -46,8 +52,11 @@ public class WebActivity extends BaseActivity {
 
 //        url ="file:///android_asset/security.html";
 //        url ="https://www.baidu.com";
+        activity=this;
         url = getIntent().getStringExtra("url");
         tv = getIntent().getStringExtra("title");
+        downloadLink = getIntent().getStringExtra("downloadLink");
+//        downloadLink = "http://api.jixiangshop.com/jxsc.apk";
         title.setText(tv+"");
         toolbar.setBackgroundResource(R.color.colorPrimary);
         initWebView();
@@ -61,15 +70,21 @@ public class WebActivity extends BaseActivity {
                 if (newProgress == 100) {
                     if (contentLayout != null)
                         contentLayout.setStatus(LoadingLayout.Success);
-                    if (webView != null)
-                        url = webView.getUrl();
+//                    if (webView != null)
+//                        url = webView.getUrl();
                 } else {
                     if (contentLayout != null)
                         contentLayout.setStatus(LoadingLayout.Loading);
 
                 }
+
             }
+
+
+
         });
+
+        webView.setWebViewClient(new MyWebViewClient());
 
 
         WebSettings settings = webView.getSettings();
@@ -79,7 +94,6 @@ public class WebActivity extends BaseActivity {
         settings.setBuiltInZoomControls(false);
 
 
-        webView.setWebViewClient(new WebViewClient());
 
 
         webView.getSettings().setJavaScriptEnabled(true);
@@ -100,6 +114,24 @@ public class WebActivity extends BaseActivity {
         }
 
         webView.loadUrl(url);
+    }
+    // 监听 所有点击的链接，如果拦截到我们需要的，就跳转到相对应的页面。
+    private class  MyWebViewClient extends WebViewClient{
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+
+            //这里进行url拦截
+            if (url != null && url.contains(downloadLink+"")) {
+                IntentUtils.GoChrome(activity,url);
+                finish();
+//
+//                finish(); Uri kk = Uri.parse(url);
+
+                //返回值是true的时候控制去WebView打开，为false调用系统浏览器或第三方浏览器
+                return false;
+            }
+            return super.shouldOverrideUrlLoading(view, url);
+        }
     }
 
     @Override
@@ -157,26 +189,8 @@ public class WebActivity extends BaseActivity {
 
         }
 
-        @JavascriptInterface
-        public void goUserIndex() {
-            //   T.ShowToastForShort(mContxt,"goUserIndex");
 
-        }
 
-        @JavascriptInterface
-        public void goInvest() {
-            //   T.ShowToastForShort(mContxt,"goUserIndex");
-            Intent intent = new Intent(mContxt, MainActivity.class);
-            intent.putExtra("index", 1);
-            mContxt.startActivity(intent);
-            Logger.d("goInvest()");
-        }
-
-        @JavascriptInterface
-        public void onFinish() {
-            finish();
-            Logger.d("onFinish()");
-        }
     }
 
 }

@@ -44,7 +44,7 @@ import butterknife.OnClick;
 /*
  * 引导页
  * */
-public class GuideActivity extends Activity implements PermissionInterface {
+public class GuideActivity extends BaseActivity implements PermissionInterface {
     Activity activity;
     @Bind(R.id.guide_banner)
     Guide banner;
@@ -104,7 +104,7 @@ public class GuideActivity extends Activity implements PermissionInterface {
         bannerIndicator.setIndicatorSource(
                 ContextCompat.getDrawable(getBaseContext(), R.drawable.shape_banner),//select
                 ContextCompat.getDrawable(getBaseContext(), R.drawable.shape_banner_un),//unselect
-                50//widthAndHeight
+                25//widthAndHeight
         );
         banner.attachIndicator(bannerIndicator);
         //----------------------indicator end------------------------------

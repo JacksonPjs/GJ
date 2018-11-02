@@ -302,8 +302,8 @@ public class MainActivity extends BaseActivity implements
         bannerIndicator = (BannerIndicator) findViewById(R.id.indicator);
         bannerIndicator.setIndicatorSource(
                 ContextCompat.getDrawable(getBaseContext(), R.mipmap.zuobiao_dangqian_banner),//select
-                ContextCompat.getDrawable(getBaseContext(), R.mipmap.baisezuobiao_banner),//unselect
-                50//widthAndHeight
+                ContextCompat.getDrawable(getBaseContext(), R.mipmap.baisezuobiao_banner)//unselect
+                //widthAndHeight
         );
         banner.attachIndicator(bannerIndicator);
         //----------------------indicator end------------------------------
@@ -353,7 +353,8 @@ public class MainActivity extends BaseActivity implements
 //                startActivity(intent);
 //              IntentUtils.GoChrome(activity);
                 IntentUtils.GoWeb(activity, datas.get(pos).getJumpLink(), datas.get(pos).getName());
-                commitData(SharedPreferencesUtils.getParam(activity, "userid", "") + "", datas.get(pos).getId() + "");
+                commitProductData(SharedPreferencesUtils.getParam(activity, "userid", "") + "", datas.get(pos).getId() + "");
+
 
             }
         });
@@ -368,7 +369,16 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
 //                mData.clear();
+                sortHome.setText(""+getString(R.string.sort_tv));
                 page = 1;
+                 pageSize = 10;
+                 minLoan = "";
+                 maxLoan = "";
+                 minTerm = "";
+                 maxTerm = "";
+                 condition = "";
+                //    String condition="speed";//精准speed/rate/amount
+                int sort = 1;//1/-1  （1：升序，-1：降序）
                 getData(0);
                 getBannerData();
                 getNoticeData();
@@ -545,7 +555,7 @@ public class MainActivity extends BaseActivity implements
                 advertDialog = new AdvertDialog(activity, advertBean);
                 AdvertBean.AdverBean posBean = null;
                 for (int i = 0; i < advertBean.getData().size(); i++) {
-                    if (advertBean.getData().get(i).getPosition() == 1) {
+                    if (advertBean.getData().get(i).getPosition() == 2) {
                         posBean = advertBean.getData().get(i);
 
                     }
@@ -577,7 +587,8 @@ public class MainActivity extends BaseActivity implements
                 if (bannerBean.getCode() == 0) {
                     drawables.clear();
                     drawables.addAll(bannerBean.getData());
-                    banner.setDataSource(drawables);
+                    List<BannerBean.BannerData> list=drawables.subList(0,5);
+                    banner.setDataSource(list);
 
                 }
             }
@@ -677,6 +688,7 @@ public class MainActivity extends BaseActivity implements
                 startActivity(intent);
                 break;
             case R.id.screen_home://筛选
+                sortHome.setText(""+getString(R.string.sort_tv));
                 View popview = View.inflate(MainActivity.this, R.layout.pop_screen_home, null);
 
                 initPopuptWindow(popview);
@@ -703,6 +715,7 @@ public class MainActivity extends BaseActivity implements
                 minTerm = "";//最低期限(天)
                 maxTerm = "";//最高期限
                 sort = 1;
+                sortHome.setText(""+getString(R.string.sort_tv));
                 getData(0);
                 break;
             case R.id.tv_rate://利息低
@@ -714,6 +727,7 @@ public class MainActivity extends BaseActivity implements
                 minTerm = "";//最低期限(天)
                 maxTerm = "";//最高期限
                 sort = 1;
+                sortHome.setText(""+getString(R.string.sort_tv));
                 getData(0);
                 break;
         }
@@ -733,7 +747,7 @@ public class MainActivity extends BaseActivity implements
                 public void onDraw() {
                     isfirst = false;
 
-                    IntentUtils.GoChrome(activity);
+                    IntentUtils.GoChrome(activity,posBean.getUrl()+"");
                     commitData(SharedPreferencesUtils.getParam(activity, "userid", "") + "", posBean.getId() + "");
 
 //                    SharedPreferencesUtils.setIsFirst(activity, false);
@@ -763,6 +777,26 @@ public class MainActivity extends BaseActivity implements
 
             }
         });
+    }
+
+    public void commitProductData(String userid, String adid) {
+        NetWorks.productFlowIncrease(userid, adid, new Subscriber<BaseBean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(BaseBean baseBean) {
+
+            }
+        });
+
     }
 
     /*
@@ -940,6 +974,7 @@ public class MainActivity extends BaseActivity implements
                 maxTerm = "";//最高期限
                 sort = -1;
                 page = 1;
+                sortHome.setText(""+sortDi.getText().toString());
                 getData(0);
             }
         });
@@ -956,6 +991,7 @@ public class MainActivity extends BaseActivity implements
                 minTerm = "";//最低期限(天)
                 maxTerm = "";//最高期限
                 page = 1;
+                sortHome.setText(""+sortGao.getText().toString());
                 getData(0);
             }
         });
@@ -1054,8 +1090,8 @@ public class MainActivity extends BaseActivity implements
         bean1.setTitle("贷款期限");
 
         termList.add("不限期限");
-        termList.add("7天");
-        termList.add("15天");
+        termList.add("0-7天");
+        termList.add("7-15天");
         termList.add("15-30天");
         termList.add("30天以上");
         bean1.setName(termList);
@@ -1119,20 +1155,20 @@ public class MainActivity extends BaseActivity implements
                                 maxTerm = "";
                                 break;
                             case 1:
-                                minTerm = 6 + "";
-                                maxTerm = "0";
+                                minTerm = 0 + "";
+                                maxTerm = "7";
                                 break;
                             case 2:
-                                minTerm = 14 + "";
-                                maxTerm = 7 + "";
+                                minTerm = 8 + "";
+                                maxTerm = 15+ "";
                                 break;
                             case 3:
-                                minTerm = 29 + "";
-                                maxTerm = 15 + "";
+                                minTerm = 15+ "";
+                                maxTerm = 30 + "";
                                 break;
                             case 4:
-                                minTerm = "";
-                                maxTerm = 30 + "";
+                                minTerm = "30";
+                                maxTerm =  "";
                                 break;
                         }
                         break;

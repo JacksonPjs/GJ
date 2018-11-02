@@ -10,13 +10,14 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.xiaowei.R;
+import com.xiaowei.ui.activity.BaseActivity;
 import com.xiaowei.ui.activity.Login.LoginActivity;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class WelcomeActivity extends Activity {
+public class WelcomeActivity extends BaseActivity {
 
     Activity activity;
     @Bind(R.id.image)
@@ -26,7 +27,7 @@ public class WelcomeActivity extends Activity {
         super.onCreate(savedInstanceState);
         //无title
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        //全屏
+//        //全屏
         getWindow().setFlags(WindowManager.LayoutParams. FLAG_FULLSCREEN ,
                 WindowManager.LayoutParams. FLAG_FULLSCREEN);
         setContentView(R.layout.activity_welcome);

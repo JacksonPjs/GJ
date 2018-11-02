@@ -1,6 +1,7 @@
 package com.xiaowei.ui.activity.Personal;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -23,6 +24,7 @@ import com.xiaowei.ui.activity.Login.LoginActivity;
 import com.xiaowei.utils.AppUtils;
 import com.xiaowei.utils.IntentUtils;
 import com.xiaowei.utils.SharedPreferencesUtils;
+import com.xiaowei.widget.Dialog.CustomDialog;
 
 import java.nio.Buffer;
 
@@ -39,6 +41,7 @@ public class PersonalActivity extends BaseActivity {
     TextView versionTv;
     @Bind(R.id.photo)
     ImageView photo;
+    CustomDialog.Builder builder;
 
 
     @Override
@@ -103,7 +106,26 @@ public class PersonalActivity extends BaseActivity {
                 startActivity(intent);
                 break;
             case R.id.exit_rl:
-                loginOut();
+                builder = new CustomDialog.Builder(activity);
+                builder.setTitle("提示");
+
+                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        loginOut();
+
+                        dialog.dismiss();
+                    }
+                });
+
+                builder.setMessage("确定退出登录");
+                builder.create().show();
                 break;
         }
     }

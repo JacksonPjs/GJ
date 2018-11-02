@@ -79,6 +79,24 @@ public class ProductListBean {
             private String loanTimeStr;
             private String synopsis;
             private String jumpLink;
+            private String registrationLink;//注册连接
+            private String downloadLink;//第三方下载页面链接
+
+            public String getRegistrationLink() {
+                return registrationLink;
+            }
+
+            public void setRegistrationLink(String registrationLink) {
+                this.registrationLink = registrationLink;
+            }
+
+            public String getDownloadLink() {
+                return downloadLink;
+            }
+
+            public void setDownloadLink(String downloadLink) {
+                this.downloadLink = downloadLink;
+            }
 
             public String getJumpLink() {
                 return jumpLink;

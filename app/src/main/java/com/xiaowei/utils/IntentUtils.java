@@ -15,11 +15,26 @@ public class IntentUtils {
         intent.setData(content_url);
         context.startActivity(intent);
     }
+    public static void GoChrome(Context context,String url) {
+        Intent intent = new Intent();
+        intent.setAction("android.intent.action.VIEW");
+        Uri content_url = Uri.parse(url);//此处填链接
+        intent.setData(content_url);
+        context.startActivity(intent);
+    }
 
     public static void GoWeb(Context context,String url,String title) {
         Intent intent = new Intent(context,WebActivity.class);
         intent.putExtra("url",url);
         intent.putExtra("title",title);
+        context.startActivity(intent);
+    }
+
+    public static void GoWeb(Context context,String url,String title,String downloadLink) {
+        Intent intent = new Intent(context,WebActivity.class);
+        intent.putExtra("url",url);
+        intent.putExtra("title",title);
+        intent.putExtra("downloadLink",downloadLink);
         context.startActivity(intent);
     }
 }

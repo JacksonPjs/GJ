@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -41,7 +43,12 @@ public class AdvertActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //无title
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_advert);
+        //全屏
+        getWindow().setFlags(WindowManager.LayoutParams. FLAG_FULLSCREEN ,
+                WindowManager.LayoutParams. FLAG_FULLSCREEN);
         ButterKnife.bind(this);
         activity=this;
         initData();
@@ -76,8 +83,9 @@ public class AdvertActivity extends BaseActivity {
                 startMain();
                 break;
             case R.id.advert_img:
-                IntentUtils.GoChrome(activity);
                 if(posBean!=null){
+                    IntentUtils.GoChrome(activity,posBean.getUrl()+"");
+
                     String androidid=DeviceUtils.getUniqueId(activity);
                     commitData(SharedPreferencesUtils.getParam(activity,"userid","")+"",posBean.getId()+"",androidid);
                 }

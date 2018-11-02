@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -33,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class StartActivity extends Activity {
+public class StartActivity extends BaseActivity {
     private final int REQUEST_VIDEO_PERMISSION = 1;
     private final static String TAG = "StartActivity";
     Activity activity;
@@ -47,10 +48,9 @@ public class StartActivity extends Activity {
         super.onCreate(savedInstanceState);
         //无title
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        //全屏
+//        //全屏
         getWindow().setFlags(WindowManager.LayoutParams. FLAG_FULLSCREEN ,
                 WindowManager.LayoutParams. FLAG_FULLSCREEN);
-
 
 
         startMain();

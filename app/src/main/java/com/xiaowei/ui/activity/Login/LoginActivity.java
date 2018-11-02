@@ -69,7 +69,7 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onTick(String time) {
                 getRegist.setEnabled(false);
-                getRegist.setText(time);
+                getRegist.setText(time+"秒重新获取");
             }
 
             @Override
@@ -127,7 +127,7 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onNext(YzmBean yzmBean) {
                 Log.e("yzm==", yzmBean.getData() + "");
-                yzm.setText(yzmBean.getData() + "");
+//                yzm.setText(yzmBean.getData() + "");
             }
         });
     }
@@ -159,7 +159,7 @@ public class LoginActivity extends BaseActivity {
                     TimeUtils.timerCancel();
                     finish();
                 } else {
-                    T.ShowToastForShort(activity, "登录失败");
+                    T.ShowToastForShort(activity, loginBean.getMsg()+"");
 
                 }
             }

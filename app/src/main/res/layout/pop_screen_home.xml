@@ -12,7 +12,7 @@
         tools:listitem="@layout/item_textview"
         tools:layoutManager="GridLayoutManager"
         tools:spanCount="4"
-        android:paddingBottom="80dp"
+        android:paddingBottom="100dp"
         ></android.support.v7.widget.RecyclerView>
 
     <LinearLayout

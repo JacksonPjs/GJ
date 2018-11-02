@@ -47,7 +47,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         ProductListBean.DataBean.contentBean d = datas.get(position);
-
+        Glide.with(context).load(d.getIcon())
+                .error(R.mipmap.ic_launcher)
+                .placeholder(R.mipmap.ic_launcher)
+                .into(holder.imageView);
 
         holder.title.setText(d.getApplicants()+"人申请");
         holder.name.setText(d.getName() + "");
@@ -60,10 +63,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         String str1 = "额度:";
         String str2 = "" + moneyShow;
 
-        Glide.with(context).load(d.getIcon())
-                .error(R.mipmap.ic_launcher)
-                .placeholder(R.mipmap.ic_launcher)
-                .into(holder.imageView);
+
         holder.tv_pos.setText(d.getSynopsis()+"");
 
         SpannableStringBuilder builder = new SpannableStringBuilder(str1 + str2);
