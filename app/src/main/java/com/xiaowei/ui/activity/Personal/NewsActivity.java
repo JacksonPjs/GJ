@@ -21,6 +21,7 @@ import com.xiaowei.widget.Dialog.CustomDialog;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+/*消息中心*/
 
 public class NewsActivity extends BaseActivity {
     Activity activity;
