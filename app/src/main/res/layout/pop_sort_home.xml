@@ -3,7 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white"
+    android:background="@color/gray_bg"
     >
 
     <TextView
@@ -15,7 +15,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/black_homne_tv"></View>
+        android:background="@color/gray"></View>
 
     <TextView
         android:id="@+id/sort_gao"

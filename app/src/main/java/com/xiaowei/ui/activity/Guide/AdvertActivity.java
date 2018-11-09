@@ -29,7 +29,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Subscriber;
-
+/*开屏广告页*/
 public class AdvertActivity extends BaseActivity {
 
     Activity activity;
@@ -55,8 +55,22 @@ public class AdvertActivity extends BaseActivity {
     }
 
     public void initData(){
+
         TimeUtils.timerStart(3*1000,1000);
-        getAdvertData();
+        Bundle bundle= getIntent().getExtras();
+        bean = (AdvertBean) bundle.getSerializable("advertbean");
+        if (bean==null)
+            finish();
+
+        for (int i=0;i<bean.getData().size();i++){
+            if (bean.getData().get(i).getPosition()==1){
+                posBean=bean.getData().get(i);
+                Glide.with(activity)
+                        .load(posBean.getImage())
+                        .error(R.mipmap.bg_start)
+                        .into(advertImg);
+            }
+        }
 //
         TimeUtils.setCountDownTimerListener(new TimeUtils.CountDownTimerlistener() {
             @Override
@@ -102,40 +116,7 @@ public class AdvertActivity extends BaseActivity {
         startActivity(intent);
         finish();
     }
-    //获取数据
-    public void getAdvertData() {
-        NetWorks.getAdvert(new Subscriber<AdvertBean>() {
-            @Override
-            public void onCompleted() {
 
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(AdvertBean advertBean) {
-                bean=advertBean;
-
-
-                if (advertBean.getCode()==0){
-                    for (int i=0;i<advertBean.getData().size();i++){
-                        if (advertBean.getData().get(i).getPosition()==1){
-                            posBean=advertBean.getData().get(i);
-                            Glide.with(activity)
-                                    .load(posBean.getImage())
-                                    .error(R.mipmap.bg_start)
-                                    .into(advertImg);
-                        }
-                    }
-                }
-
-            }
-        });
-
-    }
     /*提交数据*/
     public void commitData( String userid, String adid,String androidid){
         NetWorks.adAndNoticeFlowIncrease(userid,adid ,androidid,new Subscriber<BaseBean>() {

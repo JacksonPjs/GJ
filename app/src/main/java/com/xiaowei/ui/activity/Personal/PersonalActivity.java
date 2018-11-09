@@ -16,6 +16,7 @@ import com.xiaowei.MyApplication;
 import com.xiaowei.R;
 import com.xiaowei.bean.LoginBean;
 import com.xiaowei.bean.LoginOutBean;
+import com.xiaowei.net.ErrorUtils.ShowError;
 import com.xiaowei.net.NetWorks;
 import com.xiaowei.ui.activity.BaseActivity;
 import com.xiaowei.ui.activity.Guide.GuideActivity;
@@ -67,7 +68,7 @@ public class PersonalActivity extends BaseActivity {
 
             @Override
             public void onError(Throwable e) {
-                T.ShowToastForLong(activity, "网络异常");
+                ShowError.log(e, activity);
                 Logger.e(e.toString());
             }
 

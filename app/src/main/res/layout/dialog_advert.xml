@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:gravity="center"
-        android:background="@drawable/selector_pop_dismiss"
+        android:background="@drawable/shape_item_home_btn"
         android:layout_alignParentBottom="true"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
@@ -42,6 +42,7 @@
         android:layout_margin="10dp"
         android:layout_marginBottom="20dp"
         android:text="立即领取"
+        android:textColor="@color/white"
         />
 
 </RelativeLayout>

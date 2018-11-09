@@ -80,7 +80,7 @@ public class ProductListBean {
             private String synopsis;
             private String jumpLink;
             private String registrationLink;//注册连接
-            private String downloadLink;//第三方下载页面链接
+            private String androidDownloadLink;//第三方下载页面链接
 
             public String getRegistrationLink() {
                 return registrationLink;
@@ -90,12 +90,12 @@ public class ProductListBean {
                 this.registrationLink = registrationLink;
             }
 
-            public String getDownloadLink() {
-                return downloadLink;
+            public String getAndroidDownloadLink() {
+                return androidDownloadLink;
             }
 
-            public void setDownloadLink(String downloadLink) {
-                this.downloadLink = downloadLink;
+            public void setAndroidDownloadLink(String androidDownloadLink) {
+                this.androidDownloadLink = androidDownloadLink;
             }
 
             public String getJumpLink() {

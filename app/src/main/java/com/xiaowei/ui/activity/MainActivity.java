@@ -223,10 +223,6 @@ public class MainActivity extends BaseActivity implements
 
     public void initData() {
         notices = new ArrayList<>();
-//        Bundle bundle= getIntent().getExtras();
-//        advertBean = (AdvertBean) bundle.getSerializable("advertbean");
-
-
         getAdvertData();
         initMap();
         initBanner();
@@ -352,7 +348,7 @@ public class MainActivity extends BaseActivity implements
 //                Intent intent = new Intent(activity, DesignActivity.class);
 //                startActivity(intent);
 //              IntentUtils.GoChrome(activity);
-                IntentUtils.GoWeb(activity, datas.get(pos).getJumpLink(), datas.get(pos).getName());
+                IntentUtils.GoWeb(activity, datas.get(pos).getJumpLink(), datas.get(pos).getName(),datas.get(pos).getAndroidDownloadLink()+"");
                 commitProductData(SharedPreferencesUtils.getParam(activity, "userid", "") + "", datas.get(pos).getId() + "");
 
 
@@ -377,6 +373,7 @@ public class MainActivity extends BaseActivity implements
                  minTerm = "";
                  maxTerm = "";
                  condition = "";
+
                 //    String condition="speed";//精准speed/rate/amount
                 int sort = 1;//1/-1  （1：升序，-1：降序）
                 getData(0);
@@ -552,7 +549,6 @@ public class MainActivity extends BaseActivity implements
 
             @Override
             public void onNext(AdvertBean advertBean) {
-                advertDialog = new AdvertDialog(activity, advertBean);
                 AdvertBean.AdverBean posBean = null;
                 for (int i = 0; i < advertBean.getData().size(); i++) {
                     if (advertBean.getData().get(i).getPosition() == 2) {
@@ -561,7 +557,9 @@ public class MainActivity extends BaseActivity implements
                     }
                 }
                 if (posBean != null)
-                    showDialog(posBean);
+                    advertDialog = new AdvertDialog(activity, posBean);
+
+                showDialog(posBean);
             }
         });
 
@@ -587,8 +585,13 @@ public class MainActivity extends BaseActivity implements
                 if (bannerBean.getCode() == 0) {
                     drawables.clear();
                     drawables.addAll(bannerBean.getData());
-                    List<BannerBean.BannerData> list=drawables.subList(0,5);
-                    banner.setDataSource(list);
+                    if (drawables.size()>=5){
+                        List<BannerBean.BannerData> list=drawables.subList(0,5);
+                        banner.setDataSource(list);
+
+                    }else {
+                        banner.setDataSource(drawables);
+                    }
 
                 }
             }
@@ -610,8 +613,15 @@ public class MainActivity extends BaseActivity implements
 
             @Override
             public void onNext(NoticeBean noticeBean) {
-                if (noticeBean.getCode() == 0)
+                notices.clear();
+                index=0;
+                bitHandler.removeCallbacksAndMessages(null);
+                textSwitcher.setText("");
+                if (noticeBean.getCode() == 0){
                     notices.addAll(noticeBean.getData());
+
+                }
+
                 if (noticeBean.getData().size() > 0) {
                     bitHandler.removeMessages(0);
                     bitHandler.sendEmptyMessage(0);
@@ -943,7 +953,8 @@ public class MainActivity extends BaseActivity implements
 //        //设置动画   采用属性动画
         // 动画效果必须放在showAsDropDown()方法上边，否则无效
 
-        PopupWindow.setAnimationStyle(R.style.style_pop_animation);
+//        PopupWindow.setAnimationStyle(R.style.style_pop_animation);
+
 
 //
 //获取需要在其上方显示的控件的位置信息
@@ -956,7 +967,7 @@ public class MainActivity extends BaseActivity implements
             sortHome.getLocationOnScreen(location);
             int x = location[0];
             int y = location[1];
-            PopupWindow.showAtLocation(view, Gravity.NO_GRAVITY, 0, y + sortHome.getHeight());
+            PopupWindow.showAtLocation(view, Gravity.NO_GRAVITY, x, y + sortHome.getHeight());
         }
         sortDi = view.findViewById(R.id.sort_di);
         sortGao = view.findViewById(R.id.sort_gao);
@@ -1050,7 +1061,7 @@ public class MainActivity extends BaseActivity implements
             screenHome.getLocationOnScreen(location);
             int x = location[0];
             int y = location[1];
-            mPopupWindow.showAtLocation(view, Gravity.NO_GRAVITY, 0, y + screenHome.getHeight());
+            mPopupWindow.showAtLocation(view, Gravity.NO_GRAVITY, x, y + screenHome.getHeight());
         }
         loanView = view.findViewById(R.id.loanview);
         del = view.findViewById(R.id.del);

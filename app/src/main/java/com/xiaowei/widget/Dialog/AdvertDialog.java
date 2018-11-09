@@ -19,10 +19,10 @@ public class AdvertDialog extends BaseDialog {
     TextView msg;
     ImageView bg;
     ImageView finish;
-    AdvertBean advertBean;
+    AdvertBean.AdverBean advertBean;
 
 
-    public AdvertDialog(Context context, AdvertBean advertBean) {
+    public AdvertDialog(Context context, AdvertBean.AdverBean advertBean) {
         super(context);
         this.advertBean=advertBean;
     }
@@ -42,7 +42,7 @@ public class AdvertDialog extends BaseDialog {
         bg=findViewById(R.id.bg);
         msg=findViewById(R.id.msg);
         Glide.with(context)
-                .load(advertBean.getData().get(0).getImage())
+                .load(advertBean.getImage())
                 .error(R.mipmap.bg_start)
                 .into(bg);
 

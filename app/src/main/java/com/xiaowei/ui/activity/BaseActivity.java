@@ -13,6 +13,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.umeng.message.PushAgent;
 import com.xiaowei.MyApplication;
 import com.xiaowei.R;
 
@@ -35,7 +36,7 @@ public class BaseActivity extends AppCompatActivity {
       e.printStackTrace();
     }
 
-
+    PushAgent.getInstance(this).onAppStart();
 
   }
 

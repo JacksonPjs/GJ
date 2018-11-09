@@ -28,6 +28,11 @@
     <uses-permission android:name="android.permission.BLUETOOTH"></uses-permission>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"></uses-permission>
 
+
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.GET_TASKS" />
+
     <!--usesCleartextTraffic=true 设置可以明文通信-->
     <application
         android:name=".MyApplication"
@@ -53,7 +58,9 @@
         <activity android:name=".ui.activity.Guide.GuideActivity"></activity>
         <activity android:name=".ui.activity.Login.LoginActivity"></activity>
         <activity android:name=".ui.activity.Personal.PersonalActivity"></activity>
-        <activity android:name=".ui.activity.Personal.NewsActivity"></activity>
+        <activity android:name=".ui.activity.Personal.NewsActivity"
+
+            ></activity>
         <activity android:name=".ui.activity.Personal.ContactActivity"></activity>
         <activity android:name=".ui.activity.Guide.AdvertActivity"></activity>
         <activity android:name=".ui.activity.web.WebActivity"></activity>

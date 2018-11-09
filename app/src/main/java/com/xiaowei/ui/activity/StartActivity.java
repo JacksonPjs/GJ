@@ -20,11 +20,15 @@ import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.bumptech.glide.Glide;
 import com.example.blibrary.utils.PermissionUtils.PermissionHelper;
 import com.example.blibrary.utils.PermissionUtils.PermissionInterface;
 import com.example.blibrary.utils.PermissionsManager;
 import com.example.blibrary.utils.T;
 import com.xiaowei.R;
+import com.xiaowei.bean.AdvertBean;
+import com.xiaowei.net.ErrorUtils.ShowError;
+import com.xiaowei.net.NetWorks;
 import com.xiaowei.ui.activity.Guide.AdvertActivity;
 import com.xiaowei.ui.activity.Guide.GuideActivity;
 import com.xiaowei.ui.activity.Login.LoginActivity;
@@ -33,13 +37,14 @@ import com.xiaowei.utils.SharedPreferencesUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Subscriber;
+
 
 public class StartActivity extends BaseActivity {
     private final int REQUEST_VIDEO_PERMISSION = 1;
     private final static String TAG = "StartActivity";
     Activity activity;
     Intent intent;
-
 
 
 
@@ -74,14 +79,11 @@ public class StartActivity extends BaseActivity {
     }
 
     Handler mHandler = new Handler() {
-        Intent intent = null;
-
+        @Override
         public void handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case 0:
-                    intent = new Intent(StartActivity.this, AdvertActivity.class);
-                    startActivity(intent);
-                    finish();
+                        getAdvertData();
                     break;
                 case 1:
                     intent = new Intent(StartActivity.this, GuideActivity.class);
@@ -95,5 +97,37 @@ public class StartActivity extends BaseActivity {
         ;
     };
 
+    //获取数据
+    public void getAdvertData() {
+        NetWorks.getAdvert(new Subscriber<AdvertBean>() {
+            @Override
+            public void onCompleted() {
 
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                ShowError.log(e,activity);
+            }
+
+            @Override
+            public void onNext(AdvertBean advertBean) {
+                if (advertBean.getCode()==0){
+//                    for (int i=0;i<advertBean.getData().size();i++){
+//                        if (advertBean.getData().get(i).getPosition()==1){
+                            intent = new Intent(StartActivity.this, AdvertActivity.class);
+                            Bundle bundle=new Bundle();
+                            bundle.putSerializable("advertbean",advertBean);
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+                            finish();
+//                        }
+//                    }
+
+                }
+
+            }
+        });
+
+    }
 }
