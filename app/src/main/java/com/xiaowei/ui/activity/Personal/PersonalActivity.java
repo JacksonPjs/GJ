@@ -87,7 +87,7 @@ public class PersonalActivity extends BaseActivity {
         });
     }
 
-    @OnClick({R.id.back, R.id.about_rl, R.id.contact_rl, R.id.exit_rl, R.id.news})
+    @OnClick({R.id.back, R.id.about_rl, R.id.contact_rl, R.id.exit_rl, R.id.news,R.id.feed_rl,R.id.help_rl})
     public void onClick(View view) {
         Intent intent = null;
         switch (view.getId()) {
@@ -127,6 +127,13 @@ public class PersonalActivity extends BaseActivity {
 
                 builder.setMessage("确定退出登录");
                 builder.create().show();
+                break;
+            case R.id.feed_rl:
+                intent=new Intent(this,FeedbackActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.help_rl:
+               IntentUtils.GoWeb(this,Constants.helplUrl,""+getResources().getString(R.string.tv_help));
                 break;
         }
     }

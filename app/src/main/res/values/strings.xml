@@ -25,6 +25,9 @@
     <string name="notifyMsg">当前应用缺少必要权限。\n\n请点击\"设置\"-\"权限\"-打开所需权限。</string>
     <string name="setting">设置</string>
     <string name="cancel">取消</string>
+    <string name="feedback_hint">您的宝贵意见和建议将帮助我们更改的改进产品</string>
+    <string name="tv_feedback">意见反馈</string>
+    <string name="tv_help">帮助中心</string>
     <string name="large_text">第一品 法会因由分
 
 如是我闻，一时，佛在舍卫国祗树给孤独园，与大比丘众千二百五十人俱。尔时，世尊食时，著衣持钵，

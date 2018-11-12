@@ -43,6 +43,7 @@
         android:layout_marginBottom="20dp"
         android:text="立即领取"
         android:textColor="@color/white"
+        android:visibility="gone"
         />
 
 </RelativeLayout>

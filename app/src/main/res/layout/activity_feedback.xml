@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <include layout="@layout/toolbar_base"></include>
+    <EditText
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        android:id="@+id/edit_feedback"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/shape_ed_feedback"
+        android:layout_margin="20dp"
+        android:hint="@string/feedback_hint"
+        android:gravity="top"
+        android:textSize="@dimen/text_samll_size"
+        android:padding="5dp"
+
+        />
+    <Button
+        app:layout_constraintTop_toBottomOf="@+id/edit_feedback"
+        android:id="@+id/commit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/login_margin"
+        android:layout_marginRight="@dimen/login_margin"
+        android:layout_marginTop="@dimen/login_margin"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="提交问题"
+        android:textSize="@dimen/text_size"
+        android:textColor="@color/white"
+        android:background="@drawable/shape_rectangle_solid_blue"
+        />
+</android.support.constraint.ConstraintLayout>

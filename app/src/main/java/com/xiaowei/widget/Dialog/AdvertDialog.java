@@ -65,6 +65,15 @@ public class AdvertDialog extends BaseDialog {
                 dismiss();
             }
         });
+        bg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onClickListener!=null){
+                    onClickListener.onDraw();
+                }
+                dismiss();
+            }
+        });
 
 
     }

@@ -46,7 +46,7 @@ public class MyApplication extends Application {
         //初始化单列的OkHttpClient 对象
         initOkHttpUtils();
         //初始化组件化基础库, 统计SDK/推送SDK/分享SDK都必须调用此初始化接口
-        UMConfigure.init(this, "5be1527ff1f556aa2b000082", "Umeng", UMConfigure.DEVICE_TYPE_PHONE,
+        UMConfigure.init(this, "5be1527ff1f556aa2b000082", "ceshi", UMConfigure.DEVICE_TYPE_PHONE,
                 "85d52251d5fa11c058d5929fafe0cc8f");
         //PushSDK初始化(如使用推送SDK，必须调用此方法)
         initUpush();
