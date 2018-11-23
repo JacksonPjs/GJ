@@ -119,6 +119,7 @@
                     android:layout_weight="1"
                     android:text="到期日"
                     android:textColor="@color/black_details_tv"
+                    android:gravity="center"
                     />
 
                 <TextView
@@ -127,7 +128,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/black_details_tv"
-
+                    android:gravity="center"
                     android:text="记账产品" />
 
                 <TextView
@@ -145,7 +146,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/black_details_tv"
-
+                    android:gravity="center"
                     android:text="是否还款" />
 
             </LinearLayout>

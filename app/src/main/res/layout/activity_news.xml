@@ -2,18 +2,89 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/gray"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <include layout="@layout/toolbar_base"></include>
-    <ImageView
-        android:layout_width="wrap_content"
+
+
+    <LinearLayout
+        android:id="@+id/title_ll"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@mipmap/bg_new_def"
-        app:layout_constraintTop_toBottomOf="parent"
-        app:layout_constraintBottom_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:background="#fff"
+        android:padding="@dimen/home_margin"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        >
 
-        />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/platform_rl"
+            >
 
+            <TextView
+                android:id="@+id/platform_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:gravity="center"
+                android:layout_centerHorizontal="true"
+                android:text="平台通知"
+                android:textColor="@color/black_homne_tv"
+                android:textSize="@dimen/text_size" />
+
+            <ImageView
+                android:id="@+id/platform_view"
+                android:layout_width="35dp"
+                android:layout_height="3dp"
+                android:layout_below="@+id/platform_tv"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="3dp"
+                android:background="@color/colorPrimary"
+                ></ImageView>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/remind_rl"
+            >
+
+            <TextView
+                android:id="@+id/remind_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:gravity="center"
+                android:text="互动提醒"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/black_homne_tv"
+                android:textSize="@dimen/text_size" />
+
+            <ImageView
+                android:id="@+id/remind_view"
+                android:layout_width="35dp"
+                android:layout_height="3dp"
+                android:layout_below="@+id/remind_tv"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="3dp"
+                android:visibility="invisible"></ImageView>
+
+        </RelativeLayout>
+
+
+
+    </LinearLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/title_ll"
+        ></android.support.v4.view.ViewPager>
 </android.support.constraint.ConstraintLayout>

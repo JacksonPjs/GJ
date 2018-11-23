@@ -18,7 +18,25 @@
 
 
         />
+    <Button
+        android:id="@+id/bt_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selector_pop_dismiss"
+        android:text="立即体验"
+        android:textSize="20sp"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        tools:visibility="visible"
+        android:textColor="@color/blue_item_btn"
+        app:layout_constraintLeft_toLeftOf="@id/image"
+        app:layout_constraintRight_toRightOf="@id/image"
+        app:layout_constraintBottom_toBottomOf="@id/image"
+        app:layout_constraintTop_toTopOf="@id/image"
+        app:layout_constraintVertical_bias="0.8"
+        app:layout_constraintHorizontal_bias="0.5"
 
+        />
     <Button
         android:id="@+id/bt_next"
         android:layout_width="wrap_content"
@@ -34,7 +52,7 @@
         app:layout_constraintRight_toRightOf="@id/image"
         app:layout_constraintBottom_toBottomOf="@id/image"
         app:layout_constraintTop_toTopOf="@id/image"
-        app:layout_constraintVertical_bias="0.85"
+        app:layout_constraintVertical_bias="0.90"
         app:layout_constraintHorizontal_bias="0.5"
 
         />
