@@ -78,12 +78,15 @@ import com.xiaowei.ui.Adapter.itemTextviewAdapter;
 import com.xiaowei.ui.activity.Login.LoginActivity;
 import com.xiaowei.ui.activity.Personal.PersonalActivity;
 import com.xiaowei.ui.activity.web.WebActivity;
+import com.xiaowei.utils.AppUtils;
 import com.xiaowei.utils.DeviceUtils;
 import com.xiaowei.utils.IntentUtils;
 import com.xiaowei.utils.SharedPreferencesUtils;
 import com.xiaowei.widget.Dialog.AdvertDialog;
 import com.xiaowei.widget.Dialog.CustomDialog;
 import com.xiaowei.widget.DividerItemDecoration;
+import com.xiaowei.widget.popwindows.ScreenPop;
+import com.xiaowei.widget.popwindows.SortPop;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -143,19 +146,6 @@ public class MainActivity extends BaseActivity implements
     boolean isfirst = true;
     String locationCity = null;
     String locationProvince = null;
-    /*筛选pop声明*/
-    int mScreenWidth;
-    int mScreenHeight;
-    int mPopupWindowWidth;
-    int mPopupWindowHeight;
-    PopupWindow mPopupWindow;
-    List<String> loanList;
-    List<String> termList;
-    List<String> precisionList;
-    List<ScreenBean> beans;
-    itemTextviewAdapter loanAdapter;
-    RecyclerView loanView;
-    TextView del, complete;
 
     /**
      * 需要进行检测的权限数组
@@ -167,13 +157,7 @@ public class MainActivity extends BaseActivity implements
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.READ_PHONE_STATE
     };
-    /*声明额度pop*/
-    int ScreenWidth;
-    int ScreenHeight;
-    int PopupWindowWidth;
-    int PopupWindowHeight;
-    PopupWindow PopupWindow;
-    TextView sortDi, sortGao;
+
 
     List<BannerBean.BannerData> drawables;
     List<NoticeBean.NoticeData> notices;
@@ -203,6 +187,12 @@ public class MainActivity extends BaseActivity implements
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        isfirst = false;
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         mLocationClient.onDestroy();//销毁定位客户端，同时销毁本地定位服务。
@@ -219,6 +209,9 @@ public class MainActivity extends BaseActivity implements
     protected void onResume() {
         super.onResume();
         banner.resumeScroll();
+        if (!SharedPreferencesUtils.IsLogin(this)) {
+            touristLogin();
+        }
     }
 
     public void initData() {
@@ -229,7 +222,9 @@ public class MainActivity extends BaseActivity implements
         initNews();
         initRecycle();
         initRefresh();
-        getData(0);
+        if (SharedPreferencesUtils.IsLogin(this)) {
+            getData(0);
+        }
         getNoticeData();
         contentLayout.setEmptyImage(R.mipmap.home_empty).setEmptyText("");
         //权限
@@ -341,6 +336,9 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onItemClick(int pos) {
 
+                Intent intent = new Intent(activity, ProductDetailsActivity.class);
+                intent.putExtra("productid", datas.get(pos).getId());
+                startActivity(intent);
             }
 
             @Override
@@ -348,7 +346,7 @@ public class MainActivity extends BaseActivity implements
 //                Intent intent = new Intent(activity, DesignActivity.class);
 //                startActivity(intent);
 //              IntentUtils.GoChrome(activity);
-                IntentUtils.GoWeb(activity, datas.get(pos).getJumpLink(), datas.get(pos).getName(),datas.get(pos).getAndroidDownloadLink()+"");
+                IntentUtils.GoWeb(activity, datas.get(pos).getJumpLink(), datas.get(pos).getName(), datas.get(pos).getAndroidDownloadLink() + "");
                 commitProductData(SharedPreferencesUtils.getParam(activity, "userid", "") + "", datas.get(pos).getId() + "");
 
 
@@ -365,14 +363,14 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
 //                mData.clear();
-                sortHome.setText(""+getString(R.string.sort_tv));
+                sortHome.setText("" + getString(R.string.sort_tv));
                 page = 1;
-                 pageSize = 10;
-                 minLoan = "";
-                 maxLoan = "";
-                 minTerm = "";
-                 maxTerm = "";
-                 condition = "";
+                pageSize = 10;
+                minLoan = "";
+                maxLoan = "";
+                minTerm = "";
+                maxTerm = "";
+                condition = "";
 
                 //    String condition="speed";//精准speed/rate/amount
                 int sort = 1;//1/-1  （1：升序，-1：降序）
@@ -585,11 +583,11 @@ public class MainActivity extends BaseActivity implements
                 if (bannerBean.getCode() == 0) {
                     drawables.clear();
                     drawables.addAll(bannerBean.getData());
-                    if (drawables.size()>=5){
-                        List<BannerBean.BannerData> list=drawables.subList(0,5);
+                    if (drawables.size() >= 5) {
+                        List<BannerBean.BannerData> list = drawables.subList(0, 5);
                         banner.setDataSource(list);
 
-                    }else {
+                    } else {
                         banner.setDataSource(drawables);
                     }
 
@@ -614,10 +612,10 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onNext(NoticeBean noticeBean) {
                 notices.clear();
-                index=0;
+                index = 0;
                 bitHandler.removeCallbacksAndMessages(null);
                 textSwitcher.setText("");
-                if (noticeBean.getCode() == 0){
+                if (noticeBean.getCode() == 0) {
                     notices.addAll(noticeBean.getData());
 
                 }
@@ -644,7 +642,14 @@ public class MainActivity extends BaseActivity implements
 
                     @Override
                     public void onError(Throwable e) {
+
                         ShowError.log(e, activity);
+                        ShowError.setExceptionRetrurn(new ShowError.ExceptionRetrurn() {
+                            @Override
+                            public void onNotPermission() {
+                                touristLogin();
+                            }
+                        });
                     }
 
                     @Override
@@ -698,46 +703,25 @@ public class MainActivity extends BaseActivity implements
                 startActivity(intent);
                 break;
             case R.id.screen_home://筛选
-                sortHome.setText(""+getString(R.string.sort_tv));
-                View popview = View.inflate(MainActivity.this, R.layout.pop_screen_home, null);
-
-                initPopuptWindow(popview);
-
+                sortHome.setText("" + getString(R.string.sort_tv));
+                initScreenPop();
                 break;
             case R.id.call://定位
-//                if (isNeedCheck) {
-////                    checkPermissions(needPermissions);
-////                }
-
                 PickCity();
-
                 break;
             case R.id.tv_sort://
-                View popsortview = View.inflate(MainActivity.this, R.layout.pop_sort_home, null);
-                initSortPopuptWindow(popsortview);
+                initSortPopWindow();
                 break;
             case R.id.tv_speed://速度快
+                ResData();
                 condition = "speed";
-                page = 1;
-                pageSize = 10;
-                minLoan = "";//最小金额
-                maxLoan = "";//最大金额
-                minTerm = "";//最低期限(天)
-                maxTerm = "";//最高期限
-                sort = 1;
-                sortHome.setText(""+getString(R.string.sort_tv));
+                sortHome.setText("" + getString(R.string.sort_tv));
                 getData(0);
                 break;
             case R.id.tv_rate://利息低
+                ResData();
                 condition = "rate";
-                page = 1;
-                pageSize = 10;
-                minLoan = "";//最小金额
-                maxLoan = "";//最大金额
-                minTerm = "";//最低期限(天)
-                maxTerm = "";//最高期限
-                sort = 1;
-                sortHome.setText(""+getString(R.string.sort_tv));
+                sortHome.setText("" + getString(R.string.sort_tv));
                 getData(0);
                 break;
         }
@@ -757,7 +741,7 @@ public class MainActivity extends BaseActivity implements
                 public void onDraw() {
                     isfirst = false;
 
-                    IntentUtils.GoChrome(activity,posBean.getUrl()+"");
+                    IntentUtils.GoChrome(activity, posBean.getUrl() + "");
                     commitData(SharedPreferencesUtils.getParam(activity, "userid", "") + "", posBean.getId() + "");
 
 //                    SharedPreferencesUtils.setIsFirst(activity, false);
@@ -771,7 +755,7 @@ public class MainActivity extends BaseActivity implements
 
     /*提交广告数据*/
     public void commitData(String userid, String adid) {
-        NetWorks.adAndNoticeFlowIncrease(userid, adid, DeviceUtils.getUniqueId(activity), new Subscriber<BaseBean>() {
+        NetWorks.adAndNoticeFlowIncrease(userid, adid, new Subscriber<BaseBean>() {
             @Override
             public void onCompleted() {
 
@@ -789,6 +773,7 @@ public class MainActivity extends BaseActivity implements
         });
     }
 
+    /*提交产品流量*/
     public void commitProductData(String userid, String adid) {
         NetWorks.productFlowIncrease(userid, adid, new Subscriber<BaseBean>() {
             @Override
@@ -837,13 +822,7 @@ public class MainActivity extends BaseActivity implements
                 .setOnPickListener(new OnPickListener() {
                     @Override
                     public void onPick(int position, City data) {
-//                        currentTV.setText(data == null ? "杭州" : String.format("当前城市：%s，%s", data.getName(), data.getCode()));
                         if (data != null) {
-//                            Toast.makeText(
-//                                    getApplicationContext(),
-//                                    String.format("点击的数据：%s，%s", data.getName(), data.getCode()),
-//                                    Toast.LENGTH_SHORT)
-//                                    .show();
                             city.setText("" + data.getName());
                         }
                     }
@@ -858,22 +837,6 @@ public class MainActivity extends BaseActivity implements
                             mLocationClient.stopLocation();
                             mLocationClient.startLocation();
                         }
-                        //开始定位，这里模拟一下定位
-//                        new Handler().postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                if (null != mLocationClient) {
-//                                    //给定位客户端对象设置定位参数
-//                                    mLocationClient.setLocationOption(option);
-//                                    //设置场景模式后最好调用一次stop，再调用start以保证场景模式生效
-//                                    mLocationClient.stopLocation();
-//                                    mLocationClient.startLocation();
-//                                }
-//
-////                                locatedCity.setProvince(locationProvince);
-////                                locatedCity.setName(locationCity);
-//                            }
-//                        }, 3000);
                     }
                 })
                 .show();
@@ -902,7 +865,7 @@ public class MainActivity extends BaseActivity implements
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        startAppSettings();
+                        AppUtils.startAppSettings(activity);
                     }
                 });
 
@@ -910,326 +873,112 @@ public class MainActivity extends BaseActivity implements
 
         builder.show();
     }
-
-    /**
-     * 启动应用的设置
-     *
-     * @since 2.5.0
-     */
-    private void startAppSettings() {
-        Intent intent = new Intent(
-                Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        intent.setData(Uri.parse("package:" + getPackageName()));
-        startActivity(intent);
-    }
-
     /**
      * 设置额度高低pop框
      */
-    private void initSortPopuptWindow(View view) {
-        // 获取屏幕的width和height
-        ScreenWidth = getWindowManager().getDefaultDisplay().getWidth();
-        ScreenHeight = getWindowManager().getDefaultDisplay().getHeight();
-
-        //加载pop框的视图布局view
-        // 创建一个PopupWindow
-        // 参数1：contentView 指定PopupWindow的内容
-        // 参数2：width 指定PopupWindow的width
-        // 参数3：height 指定PopupWindow的height
-        PopupWindow = new PopupWindow(view, ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        //获取pop框的宽和高
-        PopupWindowWidth = PopupWindow.getWidth();
-        PopupWindowHeight = PopupWindow.getHeight();
-        // 需要设置一下此参数，点击外边可消失
-        PopupWindow.setBackgroundDrawable(new BitmapDrawable());
-        // 设置点击窗口外边窗口消失    这两步用于点击手机的返回键的时候，不是直接关闭activity,而是关闭pop框
-        PopupWindow.setOutsideTouchable(true);
-
-        // 设置此参数获得焦点，否则无法点击，即：事件拦截消费
-        PopupWindow.setFocusable(true);
-
-//        //设置动画   采用属性动画
-        // 动画效果必须放在showAsDropDown()方法上边，否则无效
-
-//        PopupWindow.setAnimationStyle(R.style.style_pop_animation);
-
-
-//
-//获取需要在其上方显示的控件的位置信息
-        if (Build.VERSION.SDK_INT != 24) {
-            //只有24这个版本有问题，好像是源码的问题
-            PopupWindow.showAsDropDown(sortHome);
-        } else {
-            //7.0 showAsDropDown没卵子用 得这么写
-            int[] location = new int[2];
-            sortHome.getLocationOnScreen(location);
-            int x = location[0];
-            int y = location[1];
-            PopupWindow.showAtLocation(view, Gravity.NO_GRAVITY, x, y + sortHome.getHeight());
-        }
-        sortDi = view.findViewById(R.id.sort_di);
-        sortGao = view.findViewById(R.id.sort_gao);
-
-        sortDi.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PopupWindow.dismiss();
-                condition = "amount";
-                page = 1;
-                pageSize = 10;
-                minLoan = "";//最小金额
-                maxLoan = "";//最大金额
-                minTerm = "";//最低期限(天)
-                maxTerm = "";//最高期限
-                sort = -1;
-                page = 1;
-                sortHome.setText(""+sortDi.getText().toString());
-                getData(0);
-            }
-        });
-        sortGao.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PopupWindow.dismiss();
-                condition = "amount";
-                sort = 1;
-                page = 1;
-                pageSize = 10;
-                minLoan = "";//最小金额
-                maxLoan = "";//最大金额
-                minTerm = "";//最低期限(天)
-                maxTerm = "";//最高期限
-                page = 1;
-                sortHome.setText(""+sortGao.getText().toString());
-                getData(0);
-            }
-        });
-
-        PopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+    private void initSortPopWindow() {
+        final SortPop sortPop = SortPop.getInstance(this);
+        sortPop.setAnimationStyle(R.style.style_pop_animation);
+        sortPop.backgroundAlpha(activity, 0.5f);
+        sortPop.setBackground(R.color.white);
+        sortPop.showAsDropDown(sortHome);
+        sortPop.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
-                PopupWindow = null;// 当点击屏幕时，使popupWindow消失
+                sortPop.backgroundAlpha(activity, 1.0f);
+            }
+        });
+        sortPop.setOnClickSortListener(new SortPop.OnClickSortListener() {
+            @Override
+            public void onSortDi() {
+                sortPop.dismiss();
+                ResData();
+                sort = -1;
+                sortHome.setText("" + getString(R.string.sort_di));
+                getData(0);
+            }
 
-
+            @Override
+            public void onSortGao() {
+                sortPop.dismiss();
+                ResData();
+                sort = 1;
+                sortHome.setText("" + getString(R.string.sort_gao));
+                getData(0);
             }
         });
     }
-
     /**
      * 设置筛选pop框
      */
-    private void initPopuptWindow(View view) {
-        // 获取屏幕的width和height
-        mScreenWidth = getWindowManager().getDefaultDisplay().getWidth();
-        mScreenHeight = getWindowManager().getDefaultDisplay().getHeight();
-
-        //加载pop框的视图布局view
-        // 创建一个PopupWindow
-        // 参数1：contentView 指定PopupWindow的内容
-        // 参数2：width 指定PopupWindow的width
-        // 参数3：height 指定PopupWindow的height
-        mPopupWindow = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        //获取pop框的宽和高
-        mPopupWindowWidth = mPopupWindow.getWidth();
-        mPopupWindowHeight = mPopupWindow.getHeight();
-        // 需要设置一下此参数，点击外边可消失
-        mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
-        // 设置点击窗口外边窗口消失    这两步用于点击手机的返回键的时候，不是直接关闭activity,而是关闭pop框
-        mPopupWindow.setOutsideTouchable(true);
-
-        // 设置此参数获得焦点，否则无法点击，即：事件拦截消费
-        mPopupWindow.setFocusable(true);
-
-//        //设置动画   采用属性动画
-        // 动画效果必须放在showAsDropDown()方法上边，否则无效
-
-        mPopupWindow.setAnimationStyle(R.style.style_pop_animation);
-
-        backgroundAlpha(0.5f);
-//
-//获取需要在其上方显示的控件的位置信息
-        if (Build.VERSION.SDK_INT != 24) {
-            //只有24这个版本有问题，好像是源码的问题
-            mPopupWindow.showAsDropDown(screenHome);
-        } else {
-            //7.0 showAsDropDown没卵子用 得这么写
-            int[] location = new int[2];
-            screenHome.getLocationOnScreen(location);
-            int x = location[0];
-            int y = location[1];
-            mPopupWindow.showAtLocation(view, Gravity.NO_GRAVITY, x, y + screenHome.getHeight());
-        }
-        loanView = view.findViewById(R.id.loanview);
-        del = view.findViewById(R.id.del);
-        complete = view.findViewById(R.id.complete);
-        initPopData();
-        mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+    private void initScreenPop() {
+        final ScreenPop screenPop = ScreenPop.getInstance(this);
+        screenPop.setAnimationStyle(R.style.style_pop_animation);
+        screenPop.backgroundAlpha(activity, 0.5f);
+        screenPop.setBackground(R.color.white);
+        screenPop.showAsDropDown(sortHome);
+        screenPop.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
-                mPopupWindow = null;// 当点击屏幕时，使popupWindow消失
-                backgroundAlpha(1.0f);// 当点击屏幕时，使半透明效果取消
-
-
+                screenPop.backgroundAlpha(activity, 1.0f);
             }
         });
 
-    }
-
-    /*pop子控件数据
-     * */
-    public void initPopData() {
-        loanList = new ArrayList();
-        termList = new ArrayList();
-        precisionList = new ArrayList();
-        beans = new ArrayList<>();
-        ScreenBean bean = new ScreenBean();
-        loanList.add("不限额度");
-        loanList.add("1000以下");
-        loanList.add("1000~3000");
-        loanList.add("3000~5000");
-        loanList.add("5000~10000");
-        loanList.add("10000以上");
-        bean.setTitle("贷款金额");
-        bean.setName(loanList);
-        beans.add(bean);
-
-        ScreenBean bean1 = new ScreenBean();
-        bean1.setTitle("贷款期限");
-
-        termList.add("不限期限");
-        termList.add("0-7天");
-        termList.add("7-15天");
-        termList.add("15-30天");
-        termList.add("30天以上");
-        bean1.setName(termList);
-
-        beans.add(bean1);
-
-        ScreenBean bean2 = new ScreenBean();
-        bean2.setTitle("精准标签");
-        precisionList.add("下款速度最快");
-        precisionList.add("最热门");
-        precisionList.add("通过率最高");
-        bean2.setName(precisionList);
-        beans.add(bean2);
-        LinearLayoutManager manager = new LinearLayoutManager(this);
-        manager.setOrientation(LinearLayoutManager.VERTICAL);
-        loanView.setLayoutManager(manager);
-
-
-        loanAdapter = new itemTextviewAdapter(beans, activity);
-
-
-        loanView.setAdapter(loanAdapter);
-        loanAdapter.setOnItemClickLitener(new itemTextviewAdapter.OnItemClickLitener() {
+        screenPop.setOnClickPopListener(new ScreenPop.OnClickPopListener() {
             @Override
-            public void onItemClick(int pos, int itempos) {
-//                loanAdapter.setSelection(pos);
-                switch (pos) {
-                    case 0:
-                        switch (itempos) {
-                            case 0:
-                                maxLoan = "";
-                                minLoan = "";
-                                break;
-                            case 1:
-                                maxLoan = 1000 + "";
-                                minLoan = "0";
-                                break;
-                            case 2:
-                                maxLoan = 3000 + "";
-                                minLoan = 1000 + "";
-                                break;
-                            case 3:
-                                maxLoan = 5000 + "";
-                                minLoan = 3000 + "";
-                                break;
-                            case 4:
-                                maxLoan = "10000";
-                                minLoan = 5000 + "";
-                                break;
-                            case 5:
-                                maxLoan = "";
-                                minLoan = 10000 + "";
-                                break;
-
-                        }
-                        break;
-                    case 1:
-                        switch (itempos) {
-                            case 0:
-                                minTerm = "";
-                                maxTerm = "";
-                                break;
-                            case 1:
-                                minTerm = 0 + "";
-                                maxTerm = "7";
-                                break;
-                            case 2:
-                                minTerm = 8 + "";
-                                maxTerm = 15+ "";
-                                break;
-                            case 3:
-                                minTerm = 15+ "";
-                                maxTerm = 30 + "";
-                                break;
-                            case 4:
-                                minTerm = "30";
-                                maxTerm =  "";
-                                break;
-                        }
-                        break;
-                    case 2:
-
-                        break;
-
-                }
+            public void onData(String minLoan1, String maxLoan1, String minTerm1, String maxTerm1) {
+                minLoan = minLoan1;
+                maxLoan = maxLoan1;
+                minTerm = minTerm1;
+                maxTerm = maxTerm1;
             }
 
             @Override
-            public void OnItemLongClick(int pos) {
-
+            public void onCancel() {
+                ResData();
             }
-        });
 
-
-        del.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-//                mPopupWindow.dismiss();
-                page = 1;
-                pageSize = 10;
-                minLoan = "";//最小金额
-                maxLoan = "";//最大金额
-                minTerm = "";//最低期限(天)
-                maxTerm = "";//最高期限
-//    String condition="speed";//精准speed/rate/amount
-                sort = 1;//1/-1  （1：升序，-1：降序）
-//                getData(1);
-                loanAdapter.setResetting();
-            }
-        });
-
-        complete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPopupWindow.dismiss();
+            public void onComplete() {
+                screenPop.dismiss();
                 page = 1;
                 getData(0);
             }
         });
     }
+    /*初始化筛选条件*/
+    private void ResData() {
+        //    String condition="speed";//精准speed/rate/amount
+        condition = "amount";
+        page = 1;
+        pageSize = 10;
+        minLoan = "";//最小金额
+        maxLoan = "";//最大金额
+        minTerm = "";//最低期限(天)
+        maxTerm = "";//最高期限
+        sort = 1;
+    }
 
-    // 设置popupWindow背景透明度
-    public void backgroundAlpha(float bgAlpha) {
-        WindowManager.LayoutParams lp = getWindow().getAttributes();
-        lp.alpha = bgAlpha;
-        // 0.0-1.0
-        getWindow().setAttributes(lp);
+    /*游客登录*/
+    public void touristLogin() {
+        NetWorks.touristLogin(new Subscriber<BaseBean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(BaseBean baseBean) {
+                if (baseBean.getCode() == 0) {
+                    getData(0);
+                }
+            }
+        });
     }
 
 
@@ -1237,39 +986,11 @@ public class MainActivity extends BaseActivity implements
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-            exit();
+            AppUtils.exit(this);
             return false;
         } else {
             return super.onKeyDown(keyCode, event);
         }
 
     }
-
-    Handler mHandler = new Handler() {
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            isExit = false;
-        }
-    };
-
-    /*退出app
-     * */
-    private void exit() {
-        if (!isExit) {
-            isExit = true;
-            Toast.makeText(getApplicationContext(), "再按一次退出程序",
-                    Toast.LENGTH_SHORT).show();
-            // 利用handler延迟发送更改状态信息
-            mHandler.sendEmptyMessageDelayed(0, 2000);
-        } else {
-            finish();
-            MyApplication.instance.Allfinlish();
-
-            System.exit(0);
-        }
-    }
-
-
 }

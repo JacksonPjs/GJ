@@ -13,12 +13,15 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.blibrary.utils.TimeUtils;
+import com.xiaowei.App.Constants;
 import com.xiaowei.R;
 import com.xiaowei.bean.AdvertBean;
 import com.xiaowei.bean.BaseBean;
 import com.xiaowei.bean.NoticeBean;
+import com.xiaowei.net.ErrorUtils.ShowError;
 import com.xiaowei.net.NetWorks;
 import com.xiaowei.ui.activity.BaseActivity;
+import com.xiaowei.ui.activity.Login.LoginActivity;
 import com.xiaowei.ui.activity.MainActivity;
 import com.xiaowei.ui.activity.StartActivity;
 import com.xiaowei.utils.DeviceUtils;
@@ -98,15 +101,25 @@ public class AdvertActivity extends BaseActivity {
                 break;
             case R.id.advert_img:
                 if(posBean!=null){
-                    IntentUtils.GoChrome(activity,posBean.getUrl()+"");
+                    if (SharedPreferencesUtils.IsLogin(this)){
+                        IntentUtils.GoChrome(activity,posBean.getUrl()+"");
+                        commitData(SharedPreferencesUtils.getParam(activity,"userid","")+"",
+                                posBean.getId()+"");
+                    } else {
+                        Intent intent=new Intent(this,LoginActivity.class);
+                        intent.putExtra("intentflag",Constants.INTENTCODE_ADVERT);
+                        startActivity(intent);
+                        finish();
+                    }
 
-                    String androidid=DeviceUtils.getUniqueId(activity);
-                    commitData(SharedPreferencesUtils.getParam(activity,"userid","")+"",posBean.getId()+"",androidid);
+
                 }
 
                 break;
         }
     }
+
+
 
     public void startMain(){
         Intent intent=new Intent(activity,MainActivity.class);
@@ -118,8 +131,8 @@ public class AdvertActivity extends BaseActivity {
     }
 
     /*提交数据*/
-    public void commitData( String userid, String adid,String androidid){
-        NetWorks.adAndNoticeFlowIncrease(userid,adid ,androidid,new Subscriber<BaseBean>() {
+    public void commitData( String userid, String adid){
+        NetWorks.adAndNoticeFlowIncrease(userid,adid,new Subscriber<BaseBean>() {
             @Override
             public void onCompleted() {
 
@@ -127,7 +140,7 @@ public class AdvertActivity extends BaseActivity {
 
             @Override
             public void onError(Throwable e) {
-
+                ShowError.log(e,activity);
             }
 
             @Override

@@ -31,11 +31,8 @@ import com.xiaowei.net.ErrorUtils.ShowError;
 import com.xiaowei.net.NetWorks;
 import com.xiaowei.ui.activity.Guide.AdvertActivity;
 import com.xiaowei.ui.activity.Guide.GuideActivity;
-import com.xiaowei.ui.activity.Login.LoginActivity;
 import com.xiaowei.utils.SharedPreferencesUtils;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import rx.Subscriber;
 
@@ -65,7 +62,7 @@ public class StartActivity extends BaseActivity {
 
     public void startMain() {
         // 判断是否是第一次开启应用
-        boolean isFirstOpen = SharedPreferencesUtils.getIsFirst(this);
+        boolean isFirstOpen = SharedPreferencesUtils.IsFirstOpenApp(this);
         // 如果是第一次启动，则先进入功能引导页
         if (isFirstOpen) {
         mHandler.sendEmptyMessageDelayed(1, 0);
@@ -113,16 +110,28 @@ public class StartActivity extends BaseActivity {
             @Override
             public void onNext(AdvertBean advertBean) {
                 if (advertBean.getCode()==0){
-//                    for (int i=0;i<advertBean.getData().size();i++){
-//                        if (advertBean.getData().get(i).getPosition()==1){
-                            intent = new Intent(StartActivity.this, AdvertActivity.class);
-                            Bundle bundle=new Bundle();
-                            bundle.putSerializable("advertbean",advertBean);
-                            intent.putExtras(bundle);
-                            startActivity(intent);
-                            finish();
-//                        }
-//                    }
+                    AdvertBean.AdverBean posBean = null;
+                    for (int i=0;i<advertBean.getData().size();i++){
+                        if (advertBean.getData().get(i).getPosition()==1){
+                            posBean=advertBean.getData().get(i);
+
+                        }
+                    }
+                    if (posBean!=null){
+                        intent = new Intent(StartActivity.this, AdvertActivity.class);
+                        Bundle bundle=new Bundle();
+                        bundle.putSerializable("advertbean",advertBean);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                        finish();
+                    }else {
+                        intent = new Intent(StartActivity.this, MainActivity.class);
+//                        Bundle bundle=new Bundle();
+//                        bundle.putSerializable("advertbean",advertBean);
+//                        intent.putExtras(bundle);
+                        startActivity(intent);
+                        finish();
+                    }
 
                 }
 

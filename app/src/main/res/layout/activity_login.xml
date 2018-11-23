@@ -7,7 +7,11 @@
     android:background="@color/gray"
     >
 
+        <include layout="@layout/toolbar_base"></include>
+
+
     <ImageView
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
         android:id="@+id/icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -15,7 +19,7 @@
         android:src="@mipmap/icon_login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        />
 
     <LinearLayout
         android:id="@+id/ll_phone"
@@ -50,16 +54,13 @@
             android:textColorHint="#ccc"
             android:textSize="@dimen/text_midle_size"
             />
-        <TextView
+        <ImageView
+            android:id="@+id/del_phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_high_size"
             android:padding="5dp"
             android:gravity="center"
-            android:text="发送验证码"
-            android:textColor="@color/blue_item_btn"
-            android:background="@drawable/shape_rectangle_stroke_blue"
-            android:visibility="gone"
+            android:src="@mipmap/icon_up"
             />
     </LinearLayout>
     <LinearLayout

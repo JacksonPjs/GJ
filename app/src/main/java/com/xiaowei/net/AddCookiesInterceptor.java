@@ -35,7 +35,7 @@ public class AddCookiesInterceptor implements Interceptor {
 
     //   Logger.e("------------------------------------111");
     //最近在学习RxJava,这里用了RxJava的相关API大家可以忽略,用自己逻辑实现即可
-        if ((Boolean) SharedPreferencesUtils.getParam(MyApplication.context,"islogin",false)){
+//        if (SharedPreferencesUtils.IsLogin(context)){
 //
 //       //     Logger.e("------------------------------------");
             StringBuilder sb = new StringBuilder();
@@ -59,7 +59,7 @@ public class AddCookiesInterceptor implements Interceptor {
 ////
 //////            Logger.d("Cookie---"+sb.toString());
 ////
-        }
+//        }
 
 
 

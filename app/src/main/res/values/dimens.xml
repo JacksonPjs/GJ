@@ -41,6 +41,15 @@
     <dimen name="text_large_size">23sp</dimen>
     <dimen name="text_security">16sp</dimen>
 
+
+    <dimen name="text_details_larger">17sp</dimen>
+    <dimen name="text_details_midle">16sp</dimen>
+    <dimen name="text_details_tv">14sp</dimen>
+    <dimen name="text_details_small">13sp</dimen>
+    <dimen name="bill_analysis_lager">17sp</dimen>
+    <dimen name="bill_bill_lager">20sp</dimen>
+    <dimen name="bill_details_lager">30sp</dimen>
+
     <dimen name="share_margin">30dp</dimen>
     <dimen name="share_margin_top">20dp</dimen>
     <dimen name="share_padding">5dp</dimen>
@@ -51,5 +60,8 @@
     <dimen name="personal_margin_top">10dp</dimen>
     <dimen name="personal_margin">10dp</dimen>
     <dimen name="personal_item_padding">10dp</dimen>
+
+    //账本
+    <dimen name="bill_margin">10dp</dimen>
 
 </resources>

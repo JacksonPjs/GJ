@@ -6,9 +6,11 @@ import com.xiaowei.bean.BaseBean;
 import com.xiaowei.bean.LoginBean;
 import com.xiaowei.bean.LoginOutBean;
 import com.xiaowei.bean.NoticeBean;
+import com.xiaowei.bean.ProductDetailsBean;
 import com.xiaowei.bean.ProductListBean;
 import com.xiaowei.bean.YzmBean;
 
+import okhttp3.RequestBody;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -88,8 +90,8 @@ public class NetWorks extends RetrofitUtils {
      *广告流量增加（点击广告后）
      * @param observer
      */
-    public static void adAndNoticeFlowIncrease(String userId, String adId,String androidid,Subscriber<BaseBean> observer) {
-        setSubscribe(service.adAndNoticeFlowIncrease(userId,adId,androidid), observer);
+    public static void adAndNoticeFlowIncrease(String userId, String adId,Subscriber<BaseBean> observer) {
+        setSubscribe(service.adAndNoticeFlowIncrease(userId,adId), observer);
     }
     /*
      *产品流量增加（点击产品后）
@@ -97,6 +99,27 @@ public class NetWorks extends RetrofitUtils {
      */
     public static void productFlowIncrease(String userId, String productId,Subscriber<BaseBean> observer) {
         setSubscribe(service.productFlowIncrease(userId,productId), observer);
+    }
+ /*
+     *游客登录
+     * @param observer
+     */
+    public static void touristLogin(Subscriber<BaseBean> observer) {
+        setSubscribe(service.touristLogin(), observer);
+    }
+    /*
+     *游客登录
+     * @param observer
+     */
+    public static void submitFeedback(RequestBody route, Subscriber<BaseBean> observer) {
+        setSubscribe(service.submitFeedback(route), observer);
+    }
+    /*
+     *产品详情
+     * @param observer
+     */
+    public static void getProductDetail(String productId,Subscriber<ProductDetailsBean> observer) {
+        setSubscribe(service.getProductDetail(productId), observer);
     }
 
 

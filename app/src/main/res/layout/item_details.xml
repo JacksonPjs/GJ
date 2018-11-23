@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="center"
+    android:padding="20dp"
+    >
+
+    <ImageView
+        android:id="@+id/dot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/dot_details"
+        android:padding="10dp"
+        />
+    <TextView
+        android:id="@+id/details_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@+id/dot"
+        app:layout_constraintTop_toTopOf="@id/dot"
+        app:layout_constraintBottom_toBottomOf="@+id/dot"
+        android:textSize="@dimen/text_details_midle"
+        android:textColor="@color/black_homne_tv"
+        android:text="@string/guanzhu"
+        />
+    <TextView
+        android:id="@+id/details_item_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/dot"
+        app:layout_constraintTop_toBottomOf="@+id/dot"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/details_item_tv1"
+        android:textColor="@color/black_details_tv"
+        android:textSize="@dimen/text_details_tv"
+        />
+
+
+
+
+</android.support.constraint.ConstraintLayout>

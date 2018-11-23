@@ -1,9 +1,9 @@
 package com.xiaowei.bean;
 
-public class BaseBean {
+public class BaseBean<T> {
     private int code;
-    private boolean data;
     private String msg;
+    private  T data;
 
     public int getCode() {
         return code;
@@ -13,13 +13,6 @@ public class BaseBean {
         this.code = code;
     }
 
-    public boolean isData() {
-        return data;
-    }
-
-    public void setData(boolean data) {
-        this.data = data;
-    }
 
     public String getMsg() {
         return msg;
@@ -27,5 +20,13 @@ public class BaseBean {
 
     public void setMsg(String msg) {
         this.msg = msg;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
     }
 }

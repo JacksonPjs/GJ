@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,10 +39,10 @@ public class PersonalActivity extends BaseActivity {
     Activity activity;
     @Bind(R.id.name)
     TextView name;
-    @Bind(R.id.version_go)
-    TextView versionTv;
     @Bind(R.id.photo)
     ImageView photo;
+    @Bind(R.id.btn_exit)
+    Button exit;
     CustomDialog.Builder builder;
 
 
@@ -55,8 +56,16 @@ public class PersonalActivity extends BaseActivity {
     }
 
     public void initData() {
-        versionTv.setText(AppUtils.getVersionName(activity) + "");
-        name.setText(SharedPreferencesUtils.getParam(activity,"phone","")+"");
+//        versionTv.setText(AppUtils.getVersionName(activity) + "");
+        if (SharedPreferencesUtils.IsLogin(this)) {
+            name.setText(SharedPreferencesUtils.getParam(activity, "phone", "") + "");
+            exit.setVisibility(View.VISIBLE);
+
+        } else {
+            exit.setVisibility(View.GONE);
+            name.setText("立即登录");
+
+        }
     }
 
     public void loginOut() {
@@ -77,17 +86,17 @@ public class PersonalActivity extends BaseActivity {
                 if (LoginOutBean.isData()) {
                     T.ShowToastForLong(activity, "登出成功");
 //                    SharedPreferencesUtils.setParam(MyApplication.context, "cookie", "");
-//                    SharedPreferencesUtils.savaUser(activity, new LoginBean(), "");
-                    SharedPreferencesUtils.clearAll(activity);
-                    Intent intent = new Intent(activity, WelcomeActivity.class);
+                    SharedPreferencesUtils.SetLogin(activity, false);
+                    Intent intent = new Intent(activity, PersonalActivity.class);
                     startActivity(intent);
-                    MyApplication.instance.Allfinlish();
+                    finish();
                 }
             }
         });
     }
 
-    @OnClick({R.id.back, R.id.about_rl, R.id.contact_rl, R.id.exit_rl, R.id.news,R.id.feed_rl,R.id.help_rl})
+    @OnClick({R.id.back, R.id.about_rl, R.id.contact_rl, R.id.btn_exit, R.id.news, R.id.feed_rl, R.id.help_rl, R.id.version_rl
+            , R.id.name,R.id.bill_rl})
     public void onClick(View view) {
         Intent intent = null;
         switch (view.getId()) {
@@ -99,14 +108,14 @@ public class PersonalActivity extends BaseActivity {
                 startActivity(intent);
                 break;
             case R.id.about_rl:
-                IntentUtils.GoWeb(activity,Constants.aboutuslUrl,"关于我们");
+                IntentUtils.GoWeb(activity, Constants.aboutuslUrl, "关于我们");
 
                 break;
             case R.id.contact_rl:
                 intent = new Intent(activity, ContactActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.exit_rl:
+            case R.id.btn_exit:
                 builder = new CustomDialog.Builder(activity);
                 builder.setTitle("提示");
 
@@ -129,12 +138,67 @@ public class PersonalActivity extends BaseActivity {
                 builder.create().show();
                 break;
             case R.id.feed_rl:
-                intent=new Intent(this,FeedbackActivity.class);
-                startActivity(intent);
+                if (SharedPreferencesUtils.IsLogin(this)) {
+                    intent = new Intent(this, FeedbackActivity.class);
+                    startActivity(intent);
+                } else {
+                    goLogin();
+                }
+
                 break;
             case R.id.help_rl:
-               IntentUtils.GoWeb(this,Constants.helplUrl,""+getResources().getString(R.string.tv_help));
+                if (SharedPreferencesUtils.IsLogin(this)) {
+                    IntentUtils.GoWeb(this, Constants.helplUrl, "" + getResources().getString(R.string.tv_help));
+                } else {
+                    goLogin();
+                }
+                break;
+            case R.id.version_rl:
+                IntentUtils.GoWeChat(this);
+                break;
+            case R.id.name:
+                if (SharedPreferencesUtils.IsLogin(this))
+                    return;
+
+                goLogin();
+                break;
+            case R.id.bill_rl:
+                if (SharedPreferencesUtils.IsLogin(this)) {
+                    intent = new Intent(this, BillActivity.class);
+                    startActivity(intent);
+                } else {
+                    goLogin();
+                }
                 break;
         }
+    }
+
+    private void goLoginDialog() {
+        builder = new CustomDialog.Builder(activity);
+        builder.setTitle("提示");
+
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(activity, LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        builder.setMessage("前往登录");
+        builder.create().show();
+    }
+
+    private void goLogin() {
+
+        Intent intent = new Intent(activity, LoginActivity.class);
+        startActivity(intent);
+
     }
 }

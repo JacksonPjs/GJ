@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.net.Network;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.blibrary.log.Logger;
@@ -50,7 +52,11 @@ public class LoginActivity extends BaseActivity {
     EditText yzm;
     @Bind(R.id.cbox)
     CheckBox checkBox;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+
     boolean isCheck = true;
+    int intentFlag = -1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,6 +64,15 @@ public class LoginActivity extends BaseActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         activity = this;
+        initView();
+
+    }
+
+
+    private void initView() {
+        phone.setText("" + SharedPreferencesUtils.getPhone(this));
+        intentFlag = getIntent().getIntExtra("intentflag", -1);
+        toolbar.setBackgroundResource(R.color.colorPrimary);
         checkBox.setChecked(true);//默认选中
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -69,7 +84,7 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onTick(String time) {
                 getRegist.setEnabled(false);
-                getRegist.setText(time+"秒重新获取");
+                getRegist.setText(time + "秒重新获取");
             }
 
             @Override
@@ -81,23 +96,17 @@ public class LoginActivity extends BaseActivity {
         });
     }
 
-    @OnClick({R.id.get_regist, R.id.regist_go,R.id.protocol})
+    @OnClick({R.id.get_regist, R.id.regist_go, R.id.protocol, R.id.del_phone})
     public void onClick(View view) {
-        Intent intent = null;
         switch (view.getId()) {
             case R.id.protocol:
-//                intent=new Intent(activity,WebActivity.class);
-//                intent.putExtra("url","http://47.106.123.95:9999/protocol.html");
-//                startActivity(intent);
-                IntentUtils.GoWeb(activity,Constants.protocolUrl,"服务条款");
-
+                IntentUtils.GoWeb(activity, Constants.protocolUrl, "服务条款");
                 break;
             case R.id.get_regist:
                 if (LoginRegisterUtils.isNullOrEmpty(phone)) {
                     T.ShowToastForShort(this, "手机号码未输入");
                     return;
                 }
-
                 if (!LoginRegisterUtils.isPhone(phone)) {
                     T.ShowToastForShort(this, "手机号码不正确");
                     return;
@@ -109,6 +118,21 @@ public class LoginActivity extends BaseActivity {
             case R.id.regist_go:
                 loginTerm();
                 break;
+            case R.id.del_phone:
+                phone.setText("");
+                break;
+        }
+    }
+
+    @Override
+    public void onBack(View view) {
+        super.onBack(view);
+        if (intentFlag == Constants.INTENTCODE_ADVERT) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        } else {
+            finish();
         }
     }
 
@@ -127,14 +151,13 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onNext(YzmBean yzmBean) {
                 Log.e("yzm==", yzmBean.getData() + "");
-//                yzm.setText(yzmBean.getData() + "");
             }
         });
     }
 
 
     public void login() {
-        NetWorks.login(phone.getText().toString(), yzm.getText().toString(), "2",DeviceUtils.getUniqueId(activity), new Subscriber<LoginBean>() {
+        NetWorks.login(phone.getText().toString(), yzm.getText().toString(), "2", DeviceUtils.getUniqueId(activity), new Subscriber<LoginBean>() {
             @Override
             public void onCompleted() {
 
@@ -147,19 +170,18 @@ public class LoginActivity extends BaseActivity {
             }
 
 
-
             @Override
             public void onNext(LoginBean loginBean) {
                 if (loginBean.getCode() == 0) {
                     T.ShowToastForShort(activity, "登录成功");
 //                    SharedPreferencesUtils.setIsLogin(activity,true);
-                    SharedPreferencesUtils.savaUser(activity,loginBean,phone.getText().toString());
+                    SharedPreferencesUtils.savaUser(activity, loginBean, phone.getText().toString());
                     Intent intent = new Intent(activity, MainActivity.class);
                     startActivity(intent);
                     TimeUtils.timerCancel();
                     finish();
                 } else {
-                    T.ShowToastForShort(activity, loginBean.getMsg()+"");
+                    T.ShowToastForShort(activity, loginBean.getMsg() + "");
 
                 }
             }

@@ -118,105 +118,33 @@ public class SharedPreferencesUtils {
         SharedPreferences sp = context.getSharedPreferences(FILE_NAME,
                 Context.MODE_PRIVATE);
         Editor editor = sp.edit();// 获取编辑器
-
-
-        //	editor.putString("account_id", accountBean.getId()+"");
-//		editor.putString("money", accountBean.getMoney()+"");
-//		editor.putString("integral", accountBean.getIntegral()+"");
-//		editor.putString("customer_id", customerBean.getId()+"");
-//		editor.putString("name", customerBean.getName());
-//
-//		editor.putString("face", customerBean.getFace().replaceAll(" ", ""));
         editor.putBoolean("islogin", true);//判断是否登录
         editor.putString("userid",bean.getData()+"");
 //		editor.putBoolean("existsPaypwd", customerBean.isExistsPaypwd());//判断是否登录
         editor.putString("phone", phone);// 保存手机号
-//        editor.putString("name", bean.getUserName());// 用户名字
-//        editor.putString("password", password);// 用户名字
-//        editor.putString("realname", bean.getRealName());// 实名认证名字
-//        editor.putString("bankcardno", bean.getBankCardNo());// 卡号
-//        editor.putString("password", password);// 用户名字
-//        editor.putString("images", bean.getImages());// head
-//        //	editor.putLong("systime", System.currentTimeMillis());// head
-//        java.text.NumberFormat nf = java.text.NumberFormat.getInstance();
-//        nf.setGroupingUsed(false);
-//
-//        editor.putString("total1", nf.format(bean.getTotal1()) + "");//
-//        editor.putString("total2", nf.format(bean.getTotal2()) + "");//
-//        editor.putString("total3", nf.format(bean.getTotal3()) + "");//
-//
-//        editor.putString("usableAmount", nf.format(bean.getUsableAmount()) + "");//
-//
-//        editor.putString("token", bean.getToken());//
-//
-//        editor.putBoolean("tPerson", bean.isTPerson());//
-//        editor.putBoolean("payPwd", bean.isPayPwd());//
-//        editor.putBoolean("email", bean.isEmail());//
-//        editor.putBoolean("tBankCardlist", bean.isTBankCardlist());//
 
         editor.commit();
 
     }
 
 
-
-    public static String getUserName(Context context) {
-
+    public static boolean IsLogin(Context context) {
+        return (boolean) SharedPreferencesUtils.getParam(context, "islogin", false);
+    }
+    public static void SetLogin(Context context,boolean is) {
+         SharedPreferencesUtils.setParam(context, "islogin", is);
+    }
+    public static String getPhone(Context context){
         return (String) SharedPreferencesUtils.getParam(context, "phone", "");
 
     }
 
-    public static String getPassword(Context context) {
-        return (String) SharedPreferencesUtils.getParam(context, "password", "");
 
-
-    }
-
-    public static boolean getIsRealName(Context context) {
-        return (Boolean) SharedPreferencesUtils.getParam(context, "tPerson", false);
-
-
-    }
-
-    public static boolean getIsBank(Context context) {
-        return (Boolean) SharedPreferencesUtils.getParam(context, "tBankCardlist", false);
-    }
-
-    public static void setIsBank(Context context, Boolean b) {
-        SharedPreferencesUtils.setParam(context, "tBankCardlist", b);
-    }
-
-    public static void setIsLogin(Context context, boolean isLogin) {
-        SharedPreferencesUtils.setParam(context, "islogin", false);
-    }
-
-    public static void setIsGesture(Context context, boolean IsGesture) {
-        SharedPreferencesUtils.setParam(context, "IsGesture", IsGesture);
-    }
-
-    public static boolean getIsGesture(Context context) {
-        return (boolean) SharedPreferencesUtils.getParam(context, "IsGesture", false);
-    }
-    public static void setGesturePsw(Context context, String GesturePsw) {
-        SharedPreferencesUtils.setParam(context, "GesturePsw", GesturePsw);
-    }
-
-    public static String getGesturePsw(Context context) {
-        return (String) SharedPreferencesUtils.getParam(context, "GesturePsw", "");
-    }
-
-    public static void setBankNUm(Context context, String BankNUm) {
-        SharedPreferencesUtils.setParam(context, "BankNUm", BankNUm);
-    }
-
-    public static String getBankNUm(Context context) {
-        return (String) SharedPreferencesUtils.getParam(context, "BankNUm", "");
-    }
     public static void setIsFirst(Context context, boolean IsFirst) {
         SharedPreferencesUtils.setParam(context, "IsFirst", IsFirst);
     }
     /*判断是否第一次打开app*/
-    public static boolean getIsFirst(Context context) {
+    public static boolean IsFirstOpenApp(Context context) {
         return (boolean) SharedPreferencesUtils.getParam(context, "IsFirst", true);
     }
 }

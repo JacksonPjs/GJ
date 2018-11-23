@@ -7,6 +7,7 @@ import android.util.Log;
 import com.example.blibrary.utils.T;
 import com.xiaowei.bean.ProductListBean;
 import com.xiaowei.ui.activity.Login.LoginActivity;
+import com.xiaowei.utils.SharedPreferencesUtils;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -39,10 +40,15 @@ public class ShowError {
 //                            mOnSuccessAndFaultListener.onFault("请求的地址不存在");
                     T.ShowToastForLong(activity, "请求的地址不存在");
                 } else if (code == 401) {
-                    T.ShowToastForLong(activity, "登陆异常");
-                    intent=new Intent(activity,LoginActivity.class);
-                    activity.startActivity(intent);
-                    activity.finish();
+                    SharedPreferencesUtils.SetLogin(activity,false);
+                    if (exceptionRetrurn!=null){
+                        exceptionRetrurn.onNotPermission();
+                    }
+//                    T.ShowToastForLong(activity, "登陆异常");
+
+//                    intent=new Intent(activity,LoginActivity.class);
+//                    activity.startActivity(intent);
+//                    activity.finish();
 
                 } else {
                     T.ShowToastForLong(activity, "网络异常");
@@ -66,4 +72,12 @@ public class ShowError {
 
 
     }
+     static ExceptionRetrurn exceptionRetrurn;
+    public static void  setExceptionRetrurn(ExceptionRetrurn exceptionRetrurn1){
+        exceptionRetrurn=exceptionRetrurn1;
+    }
+    public interface  ExceptionRetrurn{
+         void onNotPermission();
+    }
+
 }

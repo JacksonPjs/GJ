@@ -7,9 +7,11 @@
     <color name="black">#000000</color>
     <color name="gray">#f3f2f7</color>
     <color name="black_homne_tv">#333333</color>
+    <color name="black_details_tv">#666666</color>
     <color name="org_item_tv">#F9593D</color>
     <color name="org_item_bg">#fedbd4</color>
     <color name="gray_item">#999999</color>
     <color name="blue_item_btn">#425EE3</color>
     <color name="gray_bg">#fafafa</color>
+    <color name="orange_tv">#FF4E2B</color>
 </resources>

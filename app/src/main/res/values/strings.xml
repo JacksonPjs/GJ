@@ -13,12 +13,15 @@
     <string name="home_title1">er</string>
     <string name="done">重新获取</string>
     <string name="skip">跳过</string>
+    <string name="applynow">立即申请</string>
     <string name="agreement">已阅读并同意《小微趣钱服务条款》</string>
     <string name="tv_not_readandagree">尚未阅读或同意服务条》</string>
+    <string name="bill">账单详情</string>
     <string name="about_us">关于我们</string>
     <string name="contact_us">联系我们</string>
     <string name="exit_login">退出登录</string>
     <string name="version">版本号</string>
+    <string name="guanzhu">关注小微趣钱</string>
     <string name="phonenum">4006-490390</string>
     <string name="notifyTitle">提示</string>
     <string name="location">定位</string>
@@ -28,6 +31,14 @@
     <string name="feedback_hint">您的宝贵意见和建议将帮助我们更改的改进产品</string>
     <string name="tv_feedback">意见反馈</string>
     <string name="tv_help">帮助中心</string>
+    <string name="details_item_title">办理流程</string>
+    <string name="details_item_title2"> 申请条件</string>
+    <string name="details_item_title3">所需材料</string>
+    <string name="exit_app">再按一次退出程序</string>
+    <string name="bill_money_tv">贷款金额(元)</string>
+    <string name="bill_details_money_tv">待还金额(元)</string>
+    <string name="bill_title">借款账单</string>
+    <string name="details_item_tv1">台当局领导人蔡英文日前和所谓“友邦”总统见面，但过程中发生插曲，台“外交部”一名特约摄影师在蔡办外晕倒</string>
     <string name="large_text">第一品 法会因由分
 
 如是我闻，一时，佛在舍卫国祗树给孤独园，与大比丘众千二百五十人俱。尔时，世尊食时，著衣持钵，

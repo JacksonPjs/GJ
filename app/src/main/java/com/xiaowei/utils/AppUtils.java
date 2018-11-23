@@ -1,13 +1,23 @@
 package com.xiaowei.utils;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Handler;
+import android.os.Message;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
+
+import com.xiaowei.MyApplication;
+import com.xiaowei.R;
 
 import java.util.List;
 
@@ -125,5 +135,46 @@ public class AppUtils {
         }
         return channelName;
     }
+
+
+    private static boolean isExit = false;
+    static Handler mHandler = new Handler() {
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            isExit = false;
+        }
+    };
+
+    /*退出app
+     * */
+    public static void exit(Activity activity) {
+        if (!isExit) {
+            isExit = true;
+            Toast.makeText(activity.getApplicationContext(), activity.getString(R.string.exit_app),
+                    Toast.LENGTH_SHORT).show();
+            // 利用handler延迟发送更改状态信息
+            mHandler.sendEmptyMessageDelayed(0, 2000);
+        } else {
+            activity.finish();
+            MyApplication.instance.Allfinlish();
+
+            System.exit(0);
+        }
+    }
+
+    /**
+     * 启动应用的设置
+     *
+     * @since 2.5.0
+     */
+    public static void startAppSettings(Activity activity) {
+        Intent intent = new Intent(
+                Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setData(Uri.parse("package:" + activity.getPackageName()));
+        activity.startActivity(intent);
+    }
+
 
 }
